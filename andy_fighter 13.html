@@ -1,0 +1,2531 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<!-- iOS "Add to Home Screen" support: makes this launch fullscreen like an app, no App Store needed -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Andy Fighter">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAAERklEQVR4nO3dvWoUURiA4Ylkq6Qw1oqlIAbJLSwW3oLt3kAKOxFEEDuL3IC5DQvxFoJEAlZBtFYLU9lYrIwbkzeb2Z055ztn3qeKmJ/DnDffnNn4s9EcnjbSZW7kXoDiMg4h4xDaPPerV88yLUNhPH/dvunkEDIOIeMQMg4h4xAyDiHjEDIOIeMQMg4h4xAyDiHjEDIOIeMQ2lz+LlX7+ebh1e9w8+nHNCsJaIxxLA2C3nlsoYwrjk5Z0IePJ5FRxLFmE/TZqq+k/gNpv2Wk+cxB1Dw5Emxe3TeaaidHym/rWkdInXGk360q+6gwjlz7VF8ftcWRd4cq66OqOCLsTYQ19KWeOOLsSpyVrKmSOKLtR7T1rKaGOGLuRMxVdVJDHBpI8XFE/gaNvLbrKDuO+Fc//gqvUHYcGpRxCBUcRykTu5R1XlTkj+yPt0+apvn64iT3Qq7reLtpmmb31/3cC+mm4MmhoRmHkHEIGYeQcQgZh5BxCBmHkHEIGYdQkS+f33n5JPcSVlLaX4xzcggZh5BxCBmHUJFxlPhPHpS45iLjUBrGIWQcQqXGUdYtvKzVtkqNQwmUGsfZ0cFkOsu9imuZTGdnRwe5V7GK8n62UuiFni97a28/90I6KCmOQrNYVFYiZcRBWUyms98f3iZeTCeX3vtKSSR6HEunReQ+rj4VxU8kbhwV3ESuI3IiEePomkXM4dHpYSpmIrHiWHlaROtjtcfsaIlEiWP9m0icPtZ8ASZOIqW+CHapCC+LRVhDX6qKo8m9NzWV0QSJo98Hk1w71O/XjfCwFiKO3qXvo7KZMVdnHE3a3aqyjCbO08oQ5ns26CNMrVnMVTs5WsPtX91lNHVPjla7i71MkeqbaOWfHCmP5ZPpbJ2tXfPDu8r+wDKKyfGfxQ1eOkvGMycuGmMciybT2fGDR/S7u5/ep1xMNPlvKwrLOIQyx5H9zNXwvSPCPSXv9XFyCBmHkHEIGYdQzjginEbnLp49I5xG5zJeJSeHkHEIGYeQcfy1eMiIc+DIyziEssUR51ElvlzXyskhZBxCxvHP/BzqabRlHEJ54vA02lWWK+bkOMd7yiLjEDIOIeMQyhCHp9HVpL9uTg4h4xAyDiHjEDIOodRx+KiyjsRXz8khZBxCxiFkHEJJ4/A0ur6U19DJIWQcQsYhZBxC6eLwNNqXZFfSySFkHELGIWQcQsYhlCgOH1X6leZ6OjmEjEPIOISMQ2jA/8Zr5/u79u3bd+8N94XGaWfh7R+3Hg/xJZwcQsYhZBxCxiFkHELGIWQcQsYhZBxCxiFkHELGIWQcQsYhZBxCxiE04B/2+fbl83CfXIu29vaH+LRODqEBJ8dAOSsZJ4eQcQgZh5BxCBmHkHEIGYeQcQgZh5BxCBmHkHEIGYeQcQgZh5BxCBmHkHEIGYeQcQgZh5BxCBmHkHEIbTSHp7nXoKCcHELGIWQcQn8AW9P4ggt3T8EAAAAASUVORK5CYII=">
+<title>Andy Fighter</title>
+<style>
+  html, body {
+    margin: 0; padding: 0; min-height: 100%;
+    background: #0d0510;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Trebuchet MS', 'Courier New', monospace;
+    color: #fff;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  #wrap { text-align: center; width: 100%; max-width: 820px; padding: 10px; box-sizing: border-box; }
+  .canvasWrap { position: relative; width: 100%; max-width: 800px; margin: 0 auto; touch-action: none; }
+  canvas {
+    background: #000;
+    border: 6px solid #ffcc00;
+    border-radius: 4px;
+    box-shadow: 0 0 40px rgba(255,150,0,0.45), inset 0 0 60px rgba(0,0,0,0.6);
+    width: 100%;
+    height: auto;
+    display: block;
+    touch-action: none;
+  }
+  #hud {
+    display: flex; justify-content: space-between; flex-wrap: wrap;
+    width: 100%; max-width: 800px; margin: 0 auto 8px; font-size: 17px;
+    text-shadow: 2px 2px 0 #000;
+    font-weight: bold;
+    letter-spacing: 1px;
+    gap: 4px 12px;
+  }
+  #title {
+    font-size: 30px; color: #ffcc00; letter-spacing: 6px;
+    text-shadow: 3px 3px 0 #b8202a, 0 0 20px rgba(255,180,0,0.6);
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+  #msg {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 42px; color: #ffcc00;
+    text-shadow: 3px 3px 0 #000;
+    display: none;
+    text-align: center;
+    background: rgba(10,5,15,0.75);
+    padding: 30px 50px;
+    border: 3px solid #ffcc00;
+    border-radius: 10px;
+    max-width: 90%;
+    box-sizing: border-box;
+  }
+  #instructions {
+    margin-top: 8px; font-size: 13px; color: #ccc;
+  }
+  #instructions.mobileHide { display: none; }
+  #startBtn {
+    margin-top: 10px; padding: 10px 26px; font-size: 16px;
+    background: linear-gradient(#ffdd44, #ffaa00); border: none; border-radius: 6px;
+    cursor: pointer; font-family: inherit; font-weight: bold;
+    box-shadow: 0 3px 0 #b87800;
+  }
+  #startBtn:active { transform: translateY(2px); box-shadow: 0 1px 0 #b87800; }
+
+  /* ---- touch controls (shown on touch-capable devices) ---- */
+  #touchControls {
+    display: none;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%; max-width: 800px; margin: 10px auto 0;
+    user-select: none; -webkit-user-select: none;
+  }
+  .touchGroup { display: flex; gap: 10px; }
+  .joystickBase {
+    position: relative;
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: rgba(255,204,0,0.12);
+    border: 2px solid rgba(255,204,0,0.55);
+    touch-action: none;
+  }
+  .joystickThumb {
+    position: absolute;
+    width: 56px; height: 56px;
+    left: 50%; top: 50%;
+    margin-left: -28px; margin-top: -28px;
+    border-radius: 50%;
+    background: rgba(255,204,0,0.55);
+    border: 2px solid rgba(255,233,160,0.9);
+    pointer-events: none;
+  }
+  .joystickBase.active .joystickThumb { background: rgba(255,204,0,0.8); }
+  .actionGroup { display: flex; gap: 14px; align-items: flex-end; }
+  .abtn {
+    width: 64px; height: 64px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; font-size: 16px;
+    background: rgba(211,47,47,0.3);
+    border: 2px solid rgba(255,150,150,0.7);
+    color: #ffe0e0;
+    touch-action: none;
+  }
+  .abtn.active { background: rgba(211,47,47,0.65); }
+  @media (pointer: coarse) {
+    #touchControls { display: flex; }
+    #instructions { display: none; }
+  }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="title">🥋 ANDY FIGHTER 🥋</div>
+  <div id="hud">
+    <div>❤️ HÄLSA: <span id="healthTxt">100</span></div>
+    <div>🥋 LIV: <span id="livesTxt">3</span></div>
+    <div>🏯 NIVÅ: <span id="stageTxt">1</span></div>
+    <div>⭐ POÄNG: <span id="scoreTxt">0</span></div>
+  </div>
+  <div class="canvasWrap">
+    <canvas id="game" width="800" height="360"></canvas>
+    <div id="msg"></div>
+    <div id="errBox" style="display:none; position:absolute; top:0; left:0; right:0; background:rgba(150,0,0,0.9); color:#fff; font-size:11px; padding:6px; text-align:left; white-space:pre-wrap; z-index:999; max-height:100%; overflow:auto;"></div>
+  </div>
+  <div id="instructions">
+    ⬅️➡️ Rör dig &nbsp; | &nbsp; ⬆️ Hoppa &nbsp; | &nbsp; ⬇️ Ducka &nbsp; | &nbsp; Z Slag &nbsp; | &nbsp; X Spark
+  </div>
+  <div id="touchControls">
+    <div class="touchGroup">
+      <div class="joystickBase" id="joystickBase">
+        <div class="joystickThumb" id="joystickThumb"></div>
+      </div>
+    </div>
+    <div class="actionGroup">
+      <div class="abtn" id="tPunch">SLAG</div>
+      <div class="abtn" id="tKick">SPARK</div>
+    </div>
+  </div>
+  <button id="startBtn">STARTA SPELET</button>
+</div>
+
+<script>
+// Minimal ES5-only bootstrap script - deliberately avoids any modern syntax
+// (arrow functions, template literals, let/const, destructuring, etc.) so it
+// always parses and runs even on very old engines. It runs completely
+// independently of the main game script below, so if THAT script fails to
+// even parse on this device, this one can still catch and show the error.
+(function() {
+  var ebox = document.getElementById('errBox');
+  window.onerror = function(msg, url, line, col, err) {
+    if (ebox) {
+      ebox.style.display = 'block';
+      ebox.textContent = (ebox.textContent ? ebox.textContent + '\n---\n' : '') + 'FEL: ' + msg + ' (rad ' + line + ', kol ' + col + ')';
+    }
+    return false;
+  };
+})();
+</script>
+<script>
+const canvas = document.getElementById('game');
+function showError(msg) {
+  const box = document.getElementById('errBox');
+  if (!box) return;
+  box.style.display = 'block';
+  box.textContent = (box.textContent ? box.textContent + '\n---\n' : '') + msg;
+}
+window.addEventListener('error', (e) => {
+  showError('Fel: ' + e.message + ' (rad ' + e.lineno + ')');
+});
+window.addEventListener('unhandledrejection', (e) => {
+  showError('Ohanterat promise-fel: ' + e.reason);
+});
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+const groundY = H - 56;
+
+// (on-screen diagnostics removed - kept counters below harmless)
+let dbgClicks = 0;
+let dbgFrames = 0;
+
+let keys = {};
+let running = false;
+
+// ---------- Sound engine (fully synthesized, no audio files needed) ----------
+const Sound = (() => {
+  let ctxA = null;
+  let musicTimer = null;
+  function ensure() {
+    if (!ctxA) ctxA = new (window.AudioContext || window.webkitAudioContext)();
+    if (ctxA.state === 'suspended') ctxA.resume();
+    return ctxA;
+  }
+  function tone(freq, duration, type, startGain, opts = {}) {
+    try {
+      const ac = ensure();
+      const osc = ac.createOscillator();
+      const gain = ac.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, ac.currentTime);
+      if (opts.freqEnd !== undefined) {
+        osc.frequency.exponentialRampToValueAtTime(Math.max(opts.freqEnd,1), ac.currentTime + duration);
+      }
+      gain.gain.setValueAtTime(startGain, ac.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(ac.destination);
+      osc.start();
+      osc.stop(ac.currentTime + duration);
+    } catch (err) { /* audio is non-critical - never let it break gameplay */ }
+  }
+  function noiseBurst(duration, startGain, filterFreq) {
+    try {
+      const ac = ensure();
+      const bufferSize = Math.floor(ac.sampleRate * duration);
+      const buffer = ac.createBuffer(1, bufferSize, ac.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i=0;i<bufferSize;i++) data[i] = (Math.random()*2-1) * (1 - i/bufferSize);
+      const src = ac.createBufferSource();
+      src.buffer = buffer;
+      const filter = ac.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = filterFreq || 1800;
+      const gain = ac.createGain();
+      gain.gain.setValueAtTime(startGain, ac.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + duration);
+      src.connect(filter);
+      filter.connect(gain);
+      gain.connect(ac.destination);
+      src.start();
+    } catch (err) { /* audio is non-critical - never let it break gameplay */ }
+  }
+  function rand(min, max) { return min + Math.random() * (max - min); }
+  return {
+    unlock() { ensure(); },
+    whoosh(kind) {
+      const dur = kind === 'kick' ? rand(0.15,0.19) : rand(0.09,0.13);
+      noiseBurst(dur, 0.13, kind === 'kick' ? 950 : 1500);
+      tone(kind === 'kick' ? 500 : 700, dur, 'sine', 0.05, {freqEnd: kind === 'kick' ? 180 : 260});
+    },
+    hit(kind) {
+      // layered impact: sharp crack + low thump body, slight pitch variance each hit
+      const v = rand(0.92, 1.08);
+      noiseBurst(0.07, 0.4, 2200); // crack
+      noiseBurst(0.13, 0.3, 450);  // body
+      tone((kind === 'kick' ? 100 : 150) * v, 0.14, 'square', 0.24, {freqEnd: 45});
+      tone((kind === 'kick' ? 60 : 85) * v, 0.2, 'sine', 0.2, {freqEnd: 30});
+    },
+    hurt() {
+      const v = rand(0.94, 1.06);
+      noiseBurst(0.15, 0.32, 750);
+      tone(150 * v, 0.24, 'sawtooth', 0.2, {freqEnd: 48});
+    },
+    enemyDown() {
+      tone(300, 0.28, 'triangle', 0.2, {freqEnd: 80});
+      noiseBurst(0.18, 0.15, 350);
+    },
+    levelUp() {
+      const ac = ensure();
+      [523, 659, 784, 1047].forEach((f,i) => {
+        setTimeout(() => tone(f, 0.22, 'square', 0.16), i*90);
+      });
+    },
+    gameOver() {
+      [400, 340, 280, 200].forEach((f,i) => {
+        setTimeout(() => tone(f, 0.35, 'sawtooth', 0.18), i*140);
+      });
+    },
+    click() {
+      tone(700, 0.08, 'square', 0.15);
+    },
+    footstep() {
+      noiseBurst(0.05, 0.06, 300);
+    },
+    heal() {
+      [523, 659, 784, 1047, 1319].forEach((f,i) => {
+        setTimeout(() => tone(f, 0.18, 'sine', 0.15), i*55);
+      });
+    },
+    intro() {
+      // low gong-like hit to open
+      noiseBurst(0.5, 0.22, 280);
+      tone(100, 0.55, 'sine', 0.18, {freqEnd: 50});
+      // short martial rising riff
+      const notes = [330, 392, 440, 523, 659];
+      const durs  = [180, 180, 180, 140, 420];
+      let t = 260;
+      notes.forEach((f,i) => {
+        setTimeout(() => tone(f, durs[i]/1000, 'square', 0.14), t);
+        t += durs[i];
+      });
+    },
+    startMusic() {
+      if (musicTimer) return;
+      ensure();
+      // a looping oriental-flavored bassline + light hi-hat, low volume so it sits under the sfx
+      const bass =   [110, 110, 130.81, 110, 146.83, 130.81, 123.47, 98];
+      const melody = [0, 220, 0, 261.63, 0, 0, 246.94, 0];
+      let step = 0;
+      function playStep() {
+        if (!musicTimer) return;
+        const b = bass[step % bass.length];
+        tone(b, 0.34, 'triangle', 0.05);
+        const m = melody[step % melody.length];
+        if (m) tone(m, 0.22, 'sine', 0.035);
+        if (step % 2 === 0) noiseBurst(0.04, 0.02, 4000);
+        step++;
+        musicTimer = setTimeout(playStep, 260);
+      }
+      musicTimer = setTimeout(playStep, 10);
+    },
+    stopMusic() {
+      clearTimeout(musicTimer);
+      musicTimer = null;
+    }
+  };
+})();
+let stage = 1;
+let score = 0;
+let enemiesDefeatedThisStage = 0;
+let enemiesNeeded = 6;
+let frameCount = 0;
+let shake = 0;
+let flashTimer = 0;
+
+// ---- forward progression: camera, level length, pit hazard, lives, boss ----
+let cameraX = 0;
+let levelLength = 2400;
+let checkpointX = 0;
+let lives = 3;
+let pits = [];          // array of { x, halfW } in world coordinates
+let block = null;       // { x, halfW, height } - a stone block obstacle to jump over
+let boss = null;         // reference into `enemies` once spawned
+let bossSpawned = false;
+let bossDefeated = false;
+
+const player = {
+  x: W/2, y: groundY, w: 42, h: 74,
+  vy: 0, onGround: true, ducking: false,
+  facing: 1,
+  health: 100, maxHealth: 100,
+  attackTimer: 0, attackType: null, attackHit: false, lowAttack: false, jumpKick: false,
+  hurtTimer: 0, speed: 4.2, walkPhase: 0, moving:false, airTime: 0
+};
+
+let enemies = [];
+let particles = [];
+let sparks = [];
+let knives = [];
+let pickups = [];
+let gasClouds = []; // { x, y, radius, life, tickTimer } - from the old master's bottle throw
+let spawnCooldown = 0;
+let gameOverFlag = false;
+
+const stars = Array.from({length: 40}, () => ({
+  x: Math.random()*W, y: Math.random()*(groundY*0.5), r: Math.random()*1.6+0.3, tw: Math.random()*Math.PI*2
+}));
+const mountains = [
+  {y:0.55, color:'#241236', amp:40, speedMul:0.15},
+  {y:0.68, color:'#3a1a4a', amp:55, speedMul:0.3},
+];
+const pagodas = Array.from({length:5}, (_,i)=>({ baseX: i*220 - 40, w: 60+Math.random()*20 }));
+
+window.addEventListener('keydown', e => {
+  keys[e.code] = true;
+  if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code)) e.preventDefault();
+});
+window.addEventListener('keyup', e => { keys[e.code] = false; });
+
+// ---------- Touch controls: map on-screen buttons to the same keys object ----------
+function bindTouchButton(id, code) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const press = (e) => {
+    e.preventDefault();
+    keys[code] = true;
+    el.classList.add('active');
+    Sound.unlock();
+  };
+  const release = (e) => {
+    e.preventDefault();
+    keys[code] = false;
+    el.classList.remove('active');
+  };
+  el.addEventListener('touchstart', press, {passive:false});
+  el.addEventListener('touchend', release, {passive:false});
+  el.addEventListener('touchcancel', release, {passive:false});
+  // also support mouse (useful for testing on desktop / hybrid devices)
+  el.addEventListener('mousedown', press);
+  el.addEventListener('mouseup', release);
+  el.addEventListener('mouseleave', release);
+}
+// ---------- Virtual joystick: drag the dot around inside the circle to move ----------
+function setupJoystick() {
+  const base = document.getElementById('joystickBase');
+  const thumb = document.getElementById('joystickThumb');
+  if (!base || !thumb) return;
+  const maxDist = 38;   // how far the thumb can travel from center, in CSS px
+  const deadzone = 12;  // ignore tiny movements near the center
+  let activeTouchId = null;
+
+  function updateFromPoint(clientX, clientY) {
+    const rect = base.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    let dx = clientX - cx;
+    let dy = clientY - cy;
+    const dist = Math.hypot(dx, dy);
+    if (dist > maxDist) { dx = dx / dist * maxDist; dy = dy / dist * maxDist; }
+    thumb.style.transform = `translate(${dx}px, ${dy}px)`;
+
+    keys['ArrowLeft'] = dx < -deadzone;
+    keys['ArrowRight'] = dx > deadzone;
+    keys['ArrowUp'] = dy < -deadzone;
+    keys['ArrowDown'] = dy > deadzone;
+  }
+
+  function reset() {
+    thumb.style.transform = 'translate(0px, 0px)';
+    keys['ArrowLeft'] = false;
+    keys['ArrowRight'] = false;
+    keys['ArrowUp'] = false;
+    keys['ArrowDown'] = false;
+    base.classList.remove('active');
+  }
+
+  // touch events - the most broadly supported mechanism on mobile browsers
+  base.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    const t = e.changedTouches[0];
+    activeTouchId = t.identifier;
+    base.classList.add('active');
+    try { Sound.unlock(); } catch (err) {}
+    updateFromPoint(t.clientX, t.clientY);
+  }, {passive:false});
+  base.addEventListener('touchmove', (e) => {
+    for (const t of e.changedTouches) {
+      if (t.identifier === activeTouchId) {
+        e.preventDefault();
+        updateFromPoint(t.clientX, t.clientY);
+      }
+    }
+  }, {passive:false});
+  function touchEnd(e) {
+    for (const t of e.changedTouches) {
+      if (t.identifier === activeTouchId) {
+        e.preventDefault();
+        activeTouchId = null;
+        reset();
+      }
+    }
+  }
+  base.addEventListener('touchend', touchEnd, {passive:false});
+  base.addEventListener('touchcancel', touchEnd, {passive:false});
+
+  // mouse fallback for desktop testing
+  let mouseActive = false;
+  base.addEventListener('mousedown', (e) => {
+    mouseActive = true;
+    base.classList.add('active');
+    updateFromPoint(e.clientX, e.clientY);
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (mouseActive) updateFromPoint(e.clientX, e.clientY);
+  });
+  window.addEventListener('mouseup', () => {
+    if (mouseActive) { mouseActive = false; reset(); }
+  });
+}
+setupJoystick();
+bindTouchButton('tPunch', 'KeyZ');
+bindTouchButton('tKick', 'KeyX');
+// Space and R (used for pause/continue and restart) also need a touch-friendly trigger:
+// tapping anywhere on the canvas works as a stand-in for Space/R when the game is paused/over.
+document.getElementById('game').addEventListener('touchstart', (e) => {
+  if (!running) {
+    e.preventDefault();
+    Sound.unlock();
+    if (gameOverFlag) { keys['KeyR'] = true; setTimeout(()=>keys['KeyR']=false, 100); }
+    else { keys['Space'] = true; setTimeout(()=>keys['Space']=false, 100); }
+  }
+}, {passive:false});
+
+let dbgTouches = 0;
+let startTriggered = false;
+function doStart() {
+  if (startTriggered) return; // guard against double-firing from both touchend and click
+  startTriggered = true;
+  setTimeout(() => { startTriggered = false; }, 800);
+  dbgClicks++;
+  try {
+    document.getElementById('startBtn').style.display = 'none';
+    startGame();
+  } catch (err) {
+    showError('Kunde inte starta spelet: ' + (err && err.message ? err.message : err));
+    document.getElementById('startBtn').style.display = '';
+    return;
+  }
+  try {
+    Sound.unlock();
+    Sound.click();
+    Sound.intro();
+    setTimeout(Sound.startMusic, 1600);
+  } catch (err) {
+    console.warn('Audio init failed, continuing without sound:', err);
+  }
+}
+document.getElementById('startBtn').addEventListener('click', doStart);
+document.getElementById('startBtn').addEventListener('touchend', (e) => {
+  dbgTouches++;
+  e.preventDefault();
+  doStart();
+}, {passive:false});
+
+function startGame() {
+  running = true;
+  gameOverFlag = false;
+  stage = 1;
+  score = 0;
+  lives = 3;
+  player.health = 100;
+  enemies = [];
+  particles = [];
+  sparks = [];
+  knives = [];
+  pickups = [];
+  enemiesDefeatedThisStage = 0;
+  enemiesNeeded = 6;
+  spawnCooldown = 60;
+  setupStage();
+  hideMsg();
+  Sound.startMusic();
+}
+
+function setupStage() {
+  // world length grows a bit each stage, hazard sits partway through, boss waits at the end
+  levelLength = 2400 + (stage-1) * 350;
+  const baseX = Math.round(levelLength * 0.42);
+  const obstacleVariant = (stage - 1) % 3;
+  pits = [];
+  block = null;
+  if (obstacleVariant === 0) {
+    // a single pit to jump over - comfortably clearable with a normal running jump
+    pits.push({ x: baseX, halfW: 32 + Math.min(stage,4)*2 });
+  } else if (obstacleVariant === 1) {
+    // two separate pits with real solid ground between them:
+    // jump the first hole, land safely, then jump the second
+    const hw = 30 + Math.min(stage,4)*2;
+    const offset = 95; // leaves a solid platform of roughly 2*(offset-hw) between the two pits
+    pits.push({ x: baseX - offset, halfW: hw });
+    pits.push({ x: baseX + offset, halfW: hw });
+  } else {
+    // a stone block sitting on the ground to hop over instead of a gap
+    block = { x: baseX, halfW: 32, height: 44 };
+  }
+  boss = null;
+  bossSpawned = false;
+  bossDefeated = false;
+  cameraX = 0;
+  checkpointX = 40;
+  player.x = 60;
+  player.y = groundY;
+  player.vy = 0;
+  player.onGround = true;
+  enemies = [];
+  knives = [];
+  pickups = [];
+  gasClouds = [];
+  spawnCooldown = 60;
+}
+
+function showMsg(text, sub) {
+  const m = document.getElementById('msg');
+  m.innerHTML = text + (sub ? '<div style="font-size:16px;color:#fff;margin-top:10px;">'+sub+'</div>' : '');
+  m.style.display = 'block';
+}
+function hideMsg() { document.getElementById('msg').style.display = 'none'; }
+
+// called when the player runs out of health or falls into a pit
+function handlePlayerDefeat() {
+  lives--;
+  player.attackType = null;
+  player.lowAttack = false;
+  player.jumpKick = false;
+  knives = [];
+  if (lives > 0) {
+    player.health = player.maxHealth;
+    player.x = checkpointX;
+    player.y = groundY;
+    player.vy = 0;
+    player.onGround = true;
+    player.hurtTimer = 45; // brief grace period so you can't be hit the instant you respawn
+    flashTimer = 10; shake = 12;
+    running = false;
+    showMsg('DU FÖRLORADE ETT LIV', 'Liv kvar: ' + lives + '<br><br>Tryck MELLANSLAG för att fortsätta');
+  } else {
+    player.health = 0;
+    player.y = groundY;
+    gameOverFlag = true;
+    Sound.stopMusic();
+    Sound.gameOver();
+    showMsg('GAME OVER', 'Poäng: ' + score + '<br><br>Tryck R för att starta om');
+  }
+}
+
+const ENEMY_PALETTES = [
+  {shirt:'#2e6b8e', pants:'#1a3a4a', skin:'#e0a878'},
+  {shirt:'#2e8e4a', pants:'#1a4a2a', skin:'#c98a5c'},
+  {shirt:'#8e6a2e', pants:'#4a3a1a', skin:'#e0b090'},
+];
+const BIKER_PALETTES = [
+  {shirt:'#2a2a2e', pants:'#161618', skin:'#c98a5c'},
+  {shirt:'#39241f', pants:'#1c1210', skin:'#e0a878'},
+];
+
+// each stage cycles through a different boss archetype for variety
+const BOSS_TYPES = [
+  { name: 'NINJALEDAREN',    style: 'ninja',  hairColor: '#0a0a0a', pal: {shirt:'#141418', pants:'#0a0a0e', skin:'#d0a074'} },
+  { name: 'GAMLE MÄSTAREN',  style: 'karate', hairColor: '#e8e8e8', pal: {shirt:'#e8e4d6', pants:'#c9c2ac', skin:'#c89060'}, weapon: 'nunchaku' },
+  { name: 'MC-KUNGEN',       style: 'biker',  hairColor: '#0a0a0a', pal: {shirt:'#2c1414', pants:'#160a0a', skin:'#c98a5c'} },
+  { name: 'RÖDA DRAKEN',     style: 'karate', hairColor: '#0a0a0a', pal: {shirt:'#7a1f2e', pants:'#241014', skin:'#d0906a'} },
+];
+
+function pickEnemyType() {
+  const r = Math.random();
+  if (r < 0.14) return 'thrower';
+  if (r < 0.14 + 0.22) return 'biker';
+  if (r < 0.14 + 0.22 + 0.2 + stage*0.02) return 'heavy';
+  return 'grunt';
+}
+function spawnEnemy() {
+  const fromLeft = Math.random() < 0.25; // mostly ambush from ahead, occasionally from behind
+  const type = pickEnemyType();
+  let pal, w, h, speed, health, cooldown;
+  if (type === 'heavy') {
+    pal = {shirt:'#8e2e2e', pants:'#4a1a1a', skin:'#d0906a'};
+    w = 48; h = 78; speed = 1.2 + stage*0.12; health = 3; cooldown = 60 + Math.random()*60;
+  } else if (type === 'biker') {
+    pal = BIKER_PALETTES[Math.floor(Math.random()*BIKER_PALETTES.length)];
+    w = 42; h = 74; speed = 1.5 + stage*0.1; health = 2; cooldown = 55 + Math.random()*50;
+  } else if (type === 'thrower') {
+    pal = {shirt:'#243024', pants:'#141c14', skin:'#d0a074'};
+    w = 38; h = 68; speed = 1.3 + stage*0.08; health = 1; cooldown = 90 + Math.random()*40;
+  } else {
+    pal = ENEMY_PALETTES[Math.floor(Math.random()*ENEMY_PALETTES.length)];
+    w = 40; h = 70; speed = 1.8 + stage*0.12; health = 1; cooldown = 60 + Math.random()*60;
+  }
+  const spawnX = fromLeft ? cameraX - 30 : cameraX + W + 30;
+  const e = {
+    x: Math.max(20, Math.min(levelLength - 20, spawnX)),
+    y: groundY,
+    vy: 0, onGround: true,
+    w, h,
+    dir: fromLeft ? 1 : -1,
+    type,
+    speed,
+    health,
+    state: 'approach',
+    attackTimer: 0,
+    cooldown,
+    hurtTimer: 0,
+    walkPhase: Math.random()*Math.PI*2,
+    pal
+  };
+  enemies.push(e);
+}
+
+function update() {
+  if (gameOverFlag) return;
+  frameCount++;
+  if (shake > 0) shake--;
+  if (flashTimer > 0) flashTimer--;
+
+  player.moving = false;
+  if (!player.hurtTimer && !keys['ArrowDown']) {
+    if (keys['ArrowLeft']) { player.x -= player.speed; player.facing = -1; player.moving = true; }
+    if (keys['ArrowRight']) { player.x += player.speed; player.facing = 1; player.moving = true; }
+  }
+  player.x = Math.max(30, Math.min(levelLength - 30, player.x));
+
+  // Prevent walking straight through enemies
+  for (const en of enemies) {
+    if (en.state === 'dead') continue;
+    const minDist = (player.w*0.5 + en.w*0.5) * 0.72;
+    const dx = player.x - en.x;
+    if (Math.abs(dx) < minDist) {
+      player.x = en.x + Math.sign(dx || (player.facing || 1)) * minDist;
+    }
+  }
+  player.x = Math.max(30, Math.min(levelLength - 30, player.x));
+
+  // camera follows the player through the level
+  cameraX = Math.max(0, Math.min(Math.max(0, levelLength - W), player.x - W/2));
+
+  if (player.moving) {
+    const prevPhase = player.walkPhase;
+    player.walkPhase += 0.25;
+    // play a soft footstep each time a foot plants (phase crosses a multiple of PI)
+    if (Math.floor(prevPhase / Math.PI) !== Math.floor(player.walkPhase / Math.PI)) {
+      Sound.footstep();
+    }
+  } else {
+    player.walkPhase = 0;
+  }
+
+  player.ducking = (keys['ArrowDown'] && player.onGround && !player.attackType) || (player.attackType && player.lowAttack);
+
+  if (keys['ArrowUp'] && player.onGround && !player.ducking) {
+    player.vy = -8.6;
+    player.onGround = false;
+  }
+  player.y += player.vy;
+  player.vy += 0.6;
+  player.airTime = player.onGround ? 0 : player.airTime + 1;
+  const overPit = pits.some(p => player.x > p.x - p.halfW && player.x < p.x + p.halfW);
+  if (player.y >= groundY) {
+    if (overPit) {
+      // no ground here - keep falling into the pit
+      player.onGround = false;
+      if (player.y > groundY + 150 && !gameOverFlag) {
+        Sound.hurt();
+        handlePlayerDefeat();
+      }
+    } else {
+      player.y = groundY; player.vy = 0; player.onGround = true;
+    }
+  }
+  // a solid stone block blocks movement unless jumped high enough to clear it
+  if (block) {
+    const nearBlock = player.x > block.x - block.halfW - player.w*0.4 && player.x < block.x + block.halfW + player.w*0.4;
+    const clearedHeight = player.y < groundY - block.height + 12;
+    if (nearBlock && !clearedHeight) {
+      if (player.x < block.x) player.x = block.x - block.halfW - player.w*0.4;
+      else player.x = block.x + block.halfW + player.w*0.4;
+    }
+  }
+  // rolling checkpoint - advances whenever standing safely on solid ground
+  if (player.onGround && !overPit) {
+    checkpointX = Math.max(checkpointX, player.x - 70);
+  }
+
+  if (!player.attackType && !player.hurtTimer) {
+    const duckingNow = keys['ArrowDown'] && player.onGround;
+    const airborneNow = !player.onGround;
+    if (keys['KeyZ']) { player.attackType = 'punch'; player.attackTimer = 14; player.attackHit = false; player.lowAttack = duckingNow; player.jumpKick = false; Sound.whoosh('punch'); }
+    else if (keys['KeyX']) {
+      player.attackType = 'kick';
+      player.attackHit = false;
+      player.lowAttack = duckingNow;
+      player.jumpKick = airborneNow;
+      // low sweep kicks take a bit longer to sweep through, jump kicks are snappier
+      player.attackTimer = duckingNow ? 27 : (airborneNow ? 18 : 20);
+      Sound.whoosh('kick');
+    }
+  }
+  // flying kick: a bit of forward momentum while airborne mid-kick
+  if (player.attackType === 'kick' && player.jumpKick && !player.onGround) {
+    player.x += player.facing * 3.2;
+  }
+  if (player.attackTimer > 0) {
+    player.attackTimer--;
+    const activeFrame = player.attackType === 'punch' ? player.attackTimer < 9 && player.attackTimer > 3
+                                                        : player.attackTimer < 13 && player.attackTimer > 5;
+    if (activeFrame && !player.attackHit) {
+      const reach = player.attackType === 'punch' ? 56 : (player.lowAttack ? 86 : 74);
+      for (const en of enemies) {
+        if (en.state === 'dead') continue;
+        const dx = en.x - player.x;
+        const vTolerance = player.attackType === 'kick' ? 60 : 40;
+        if (Math.sign(dx || player.facing) === player.facing && Math.abs(dx) < reach && Math.abs(en.y - player.y) < vTolerance) {
+          en.health -= 1;
+          en.hurtTimer = 12;
+          en.knockback = player.facing * 10;
+          spawnParticles(en.x, en.y - en.h/2, en.pal.shirt);
+          spawnBlood(en.x + player.facing*8, en.y - en.h*0.55, player.facing);
+          spawnSpark(en.x + player.facing*15, en.y - en.h*0.55);
+          shake = 6;
+          Sound.hit(player.attackType);
+          if (en.health <= 0) {
+            en.state = 'dead';
+            en.deadTimer = 30;
+            score += en.type === 'boss' ? 1000 : (en.type === 'heavy' ? 300 : 100);
+            enemiesDefeatedThisStage++;
+            Sound.enemyDown();
+            if (en.type === 'thrower' && Math.random() < 0.65) {
+              pickups.push({ x: en.x, y: groundY, bobPhase: Math.random()*Math.PI*2, collected: false });
+            }
+            if (en.type === 'boss') {
+              bossDefeated = true;
+              boss = null;
+            }
+          }
+          player.attackHit = true;
+        }
+      }
+    }
+    if (player.attackTimer <= 0) { player.attackType = null; player.lowAttack = false; player.jumpKick = false; }
+  }
+  if (player.hurtTimer > 0) player.hurtTimer--;
+
+  spawnCooldown--;
+  if (!bossSpawned && spawnCooldown <= 0 && enemies.filter(e=>e.state!=='dead').length < 3 &&
+      (enemiesDefeatedThisStage + enemies.length) < enemiesNeeded) {
+    spawnEnemy();
+    spawnCooldown = Math.max(40, 90 - stage*5);
+  }
+
+  // boss appears once the player nears the end of the level
+  if (!bossSpawned && player.x > levelLength - 260) {
+    bossSpawned = true;
+    const bossDef = BOSS_TYPES[(stage-1) % BOSS_TYPES.length];
+    boss = {
+      x: Math.min(levelLength - 40, cameraX + W + 40),
+      y: groundY,
+      vy: 0, onGround: true,
+      w: 66, h: 104,
+      dir: -1,
+      type: 'boss',
+      bossStyle: bossDef.style,
+      hairColor: bossDef.hairColor,
+      weapon: bossDef.weapon || null,
+      speed: 1.4 + stage*0.1,
+      health: 16 + stage*3,
+      maxHealth: 16 + stage*3,
+      state: 'approach',
+      attackTimer: 0,
+      cooldown: 38 + Math.random()*20,
+      hurtTimer: 0,
+      walkPhase: Math.random()*Math.PI*2,
+      pal: bossDef.pal,
+      specialTimer: 90 + Math.random()*50
+    };
+    enemies.push(boss);
+    showMsg(bossDef.name, '');
+    setTimeout(hideMsg, 1400);
+  }
+
+  for (const en of enemies) {
+    if (en.state === 'dead') { en.deadTimer--; continue; }
+    if (en.hurtTimer > 0) {
+      en.hurtTimer--;
+      en.x += (en.knockback || 0) * 0.3;
+      en.knockback *= 0.8;
+      continue;
+    }
+    const dx = player.x - en.x;
+    const dist = Math.abs(dx);
+    en.dir = Math.sign(dx) || en.dir;
+
+    // hop over pits/blocks instead of just walking straight through them -
+    // trigger right at the near edge (depending on travel direction) and give a
+    // speed boost during the jump so the whole gap is cleared in a single leap
+    const hazards = block ? [...pits, block] : pits;
+    if (hazards.length && en.onGround && !en.jumpedPit) {
+      for (const hz of hazards) {
+        const nearEdge = en.dir > 0 ? hz.x - hz.halfW : hz.x + hz.halfW;
+        const approaching = en.dir > 0 ? (en.x >= nearEdge - 6 && en.x < nearEdge + 6)
+                                        : (en.x <= nearEdge + 6 && en.x > nearEdge - 6);
+        if (approaching) {
+          en.vy = -9.5;
+          en.onGround = false;
+          en.jumpedPit = true;
+          break;
+        }
+      }
+    }
+    if (!en.onGround) {
+      en.y += en.vy;
+      en.vy += 0.6;
+      if (en.y >= groundY) { en.y = groundY; en.vy = 0; en.onGround = true; }
+    } else if (en.jumpedPit && !hazards.some(hz => en.x > hz.x - hz.halfW - 30 && en.x < hz.x + hz.halfW + 30)) {
+      en.jumpedPit = false; // clear of all hazards, allow jumping again if they turn back around
+    }
+    const hSpeedMul = !en.onGround ? 2.3 : 1; // extra push mid-air to clear the whole gap
+
+    // boss special attacks - each archetype gets its own signature move on a cooldown
+    if (en.type === 'boss') {
+      en.specialTimer--;
+
+      // punish mechanic: attacking the ninja while crouched guarantees a sword counter-hit
+      const ninjaCounter = en.bossStyle === 'ninja' && player.attackType && player.lowAttack
+        && dist < 130 && en.specialAttackLock <= 0 && !(en.swordSlashTimer > 0) && en.hurtTimer <= 0;
+
+      if (ninjaCounter) {
+        en.swordSlashTimer = 22;
+        en.hasSword = true;
+        en.state = 'attack';
+        en.attackKind = 'punch';
+        en.attackTimer = 22;
+        en.specialAttackLock = 22;
+        en.specialTimer = 130 + Math.random()*60;
+      } else if (en.specialTimer <= 0) {
+        en.specialTimer = 130 + Math.random()*60;
+        if (en.bossStyle === 'ninja') {
+          const useShuriken = dist > 150 ? true : (dist < 100 ? false : Math.random() < 0.5);
+          if (useShuriken) {
+            // far away - throws a spinning shuriken at the player
+            knives.push({ x: en.x + en.dir*24, vx: en.dir*7.5, dir: en.dir, hit: false, star: true });
+            Sound.whoosh('kick');
+            en.specialAttackLock = 14;
+          } else {
+            // close range - draws a sword for a wide slash with extra reach
+            en.swordSlashTimer = 22;
+            en.hasSword = true;
+            en.state = 'attack';
+            en.attackKind = 'punch';
+            en.attackTimer = 22;
+            en.specialAttackLock = 22;
+          }
+        } else if (en.bossStyle === 'biker') {
+          // motorcycle chain lash - a big swing that reaches much further than a normal punch
+          en.chainLashTimer = 20;
+          en.state = 'attack';
+          en.attackKind = 'punch';
+          en.attackTimer = 20;
+          en.specialAttackLock = 20;
+        } else if (en.bossStyle === 'karate') {
+          if (en.weapon === 'nunchaku' && dist > 140 && Math.random() < 0.6) {
+            // throws a bottle that shatters into a damaging green gas cloud
+            knives.push({ x: en.x + en.dir*24, vx: en.dir*6, dir: en.dir, hit: false, bottle: true, targetX: player.x });
+            Sound.whoosh('kick');
+            en.specialAttackLock = 14;
+          } else {
+            // a focused strike - telegraphs briefly then lands a heavier hit than usual
+            en.focusedStrikeTimer = 16;
+            en.state = 'attack';
+            en.attackKind = Math.random() < 0.5 ? 'kick' : 'punch';
+            en.attackTimer = 16;
+            en.specialAttackLock = 16;
+          }
+        }
+      }
+      if (en.chainLashTimer > 0) {
+        en.chainLashTimer--;
+        if (en.attackTimer > 0) en.attackTimer--;
+        if (en.chainLashTimer === 10 && dist < 175 && !player.hurtTimer && !player.ducking) {
+          player.health -= 14;
+          player.hurtTimer = 25;
+          flashTimer = 8; shake = 10;
+          spawnParticles(player.x, player.y - 30, '#ffcc00');
+          spawnBlood(player.x, player.y - 35, -player.facing);
+          Sound.hurt();
+          Sound.hit('punch');
+          if (player.health <= 0) handlePlayerDefeat();
+        }
+      }
+      if (en.swordSlashTimer > 0) {
+        en.swordSlashTimer--;
+        if (en.attackTimer > 0) en.attackTimer--;
+        if (en.swordSlashTimer === 12 && dist < 130 && !player.hurtTimer && !player.ducking) {
+          player.health -= 13;
+          player.hurtTimer = 25;
+          flashTimer = 8; shake = 10;
+          spawnParticles(player.x, player.y - 30, '#dfe6ea');
+          spawnBlood(player.x, player.y - 35, -player.facing);
+          Sound.hurt();
+          Sound.hit('punch');
+          if (player.health <= 0) handlePlayerDefeat();
+        }
+      }
+      if (en.focusedStrikeTimer > 0) {
+        en.focusedStrikeTimer--;
+        if (en.attackTimer > 0) en.attackTimer--;
+        if (en.focusedStrikeTimer === 8 && dist < 95 && !player.hurtTimer && !player.ducking) {
+          player.health -= 22; // baseline boss damage plus the focused bonus baked in
+          player.hurtTimer = 25;
+          flashTimer = 8; shake = 10;
+          spawnParticles(player.x, player.y - 30, '#ffcc00');
+          spawnBlood(player.x, player.y - 35, -player.facing);
+          spawnSpark(player.x - en.dir*15, player.y - 40);
+          Sound.hurt();
+          Sound.hit(en.attackKind);
+          if (player.health <= 0) handlePlayerDefeat();
+        }
+      }
+    }
+
+    // while a special attack is playing out, freeze the normal approach/engage logic
+    // so it doesn't immediately overwrite the attack (this was causing the boss to
+    // stutter/glitch between states right after triggering a special move)
+    if (en.specialAttackLock > 0) {
+      en.specialAttackLock--;
+      continue;
+    }
+
+    if (en.type === 'thrower') {
+      // ranged: hangs back and throws knives - back away if the player closes in
+      if (dist < 90) {
+        en.x -= en.dir * en.speed * hSpeedMul;
+        en.state = 'approach';
+        en.walkPhase += 0.2;
+      } else if (dist > 260) {
+        en.x += en.dir * en.speed * hSpeedMul;
+        en.state = 'approach';
+        en.walkPhase += 0.2;
+      } else {
+        en.state = 'attack';
+        en.attackKind = 'punch';
+        en.attackTimer--;
+        if (en.attackTimer <= 0) {
+          en.attackTimer = en.cooldown;
+          knives.push({ x: en.x + en.dir*22, vx: en.dir*6.5, dir: en.dir, hit: false });
+          Sound.whoosh('punch');
+        }
+      }
+      continue;
+    }
+
+    const engageDist = en.type === 'biker' ? 68 : (en.type === 'boss' ? 78 : 55);
+    if (dist > engageDist || !en.onGround) {
+      en.x += en.dir * en.speed * hSpeedMul;
+      en.state = 'approach';
+      en.walkPhase += 0.2;
+    } else {
+      if (en.state !== 'attack') en.attackKind = Math.random() < 0.5 ? 'kick' : 'punch';
+      en.state = 'attack';
+      en.attackTimer--;
+      if (en.attackTimer <= 0) {
+        en.attackTimer = en.cooldown;
+        if (!player.hurtTimer && !player.ducking) {
+          const dmg = en.type === 'boss' ? 19 : (en.type === 'heavy' ? 12 : (en.type === 'biker' ? 10 : 7));
+          player.health -= dmg;
+          player.hurtTimer = 25;
+          flashTimer = 8; shake = 10;
+          spawnParticles(player.x, player.y - 30, '#ffcc00');
+          spawnBlood(player.x, player.y - 35, -player.facing);
+          spawnSpark(player.x - en.dir*15, player.y - 40);
+          Sound.hurt();
+          if (player.health <= 0) {
+            handlePlayerDefeat();
+          }
+        }
+      }
+    }
+  }
+  enemies = enemies.filter(en => !(en.state === 'dead' && en.deadTimer <= 0));
+
+  // thrown knives / shurikens / bottles - must duck to avoid the projectiles
+  for (const k of knives) { k.x += k.vx; }
+  for (const k of knives) {
+    if (k.hit) continue;
+    if (k.bottle) {
+      // travels to roughly where the player was, then shatters into a gas cloud
+      const reached = (k.dir > 0 && k.x >= k.targetX) || (k.dir < 0 && k.x <= k.targetX);
+      if (reached || Math.abs(k.x - cameraX - W/2) > W) {
+        k.hit = true;
+        gasClouds.push({ x: k.x, y: groundY, radius: 60, life: 220, tickTimer: 0 });
+        spawnParticles(k.x, groundY - 60, '#7ee67e');
+        Sound.hit('kick');
+      }
+      continue;
+    }
+    if (!player.ducking && !player.hurtTimer && Math.abs(k.x - player.x) < 20) {
+      k.hit = true;
+      player.health -= 8;
+      player.hurtTimer = 25;
+      flashTimer = 8; shake = 8;
+      spawnParticles(player.x, player.y - 42, '#d8dde0');
+      spawnBlood(player.x, player.y - 35, -player.facing);
+      Sound.hurt();
+      if (player.health <= 0) {
+        handlePlayerDefeat();
+      }
+    }
+  }
+  knives = knives.filter(k => !k.hit && k.x > cameraX-40 && k.x < cameraX+W+40);
+
+  // lingering poison gas clouds from shattered bottles - standing in one hurts, ducking doesn't help (it's gas, not a projectile)
+  for (const cloud of gasClouds) {
+    cloud.life--;
+    cloud.tickTimer--;
+    if (cloud.tickTimer <= 0 && Math.abs(player.x - cloud.x) < cloud.radius && !player.hurtTimer) {
+      cloud.tickTimer = 45;
+      player.health -= 3;
+      player.hurtTimer = 15; // brief buffer so it nudges you rather than melting your health
+      flashTimer = 5; shake = 3;
+      spawnParticles(player.x, player.y - 30, '#7ee67e');
+      Sound.hurt();
+      if (player.health <= 0) handlePlayerDefeat();
+    }
+  }
+  gasClouds = gasClouds.filter(c => c.life > 0);
+
+  // energy bottle pickups - walk into one to heal
+  for (const p of pickups) {
+    if (p.collected) continue;
+    p.bobPhase += 0.12;
+    if (Math.abs(p.x - player.x) < 26 && player.health < player.maxHealth) {
+      p.collected = true;
+      player.health = Math.min(player.maxHealth, player.health + 30);
+      spawnParticles(player.x, player.y - 30, '#5ce65c');
+      Sound.heal();
+    }
+  }
+  pickups = pickups.filter(p => !p.collected);
+
+
+  particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += 0.3; p.life--; });
+  particles = particles.filter(p => p.life > 0);
+  sparks.forEach(s => s.life--);
+  sparks = sparks.filter(s => s.life > 0);
+
+  if (!gameOverFlag && bossDefeated && enemies.filter(e=>e.type==='boss').length === 0) {
+    stage++;
+    enemiesDefeatedThisStage = 0;
+    enemiesNeeded = 6 + stage * 2;
+    player.health = Math.min(player.maxHealth, player.health + 20);
+    running = false;
+    Sound.levelUp();
+    showMsg('NIVÅ ' + (stage-1) + ' KLARAD!', 'Nästa nivå: ' + stage + '<br><br>Tryck MELLANSLAG för att fortsätta');
+    setupStage();
+  }
+
+  document.getElementById('healthTxt').textContent = Math.round(player.health);
+  document.getElementById('livesTxt').textContent = lives;
+  document.getElementById('stageTxt').textContent = stage;
+  document.getElementById('scoreTxt').textContent = score;
+}
+
+function spawnParticles(x, y, color) {
+  for (let i=0;i<8;i++) {
+    particles.push({ x, y, vx: (Math.random()-0.5)*6, vy: -Math.random()*5, life: 20, color });
+  }
+}
+function spawnBlood(x, y, dir) {
+  for (let i=0;i<6;i++) {
+    particles.push({
+      x, y,
+      vx: (dir||1) * (0.5 + Math.random()*3.5) * (Math.random()<0.3 ? -0.4 : 1),
+      vy: -Math.random()*3.5 - 0.5,
+      life: 16 + Math.random()*10,
+      color: Math.random() < 0.5 ? '#a11d1d' : '#6e0f0f',
+      gravity: true,
+      blood: true
+    });
+  }
+}
+function spawnSpark(x, y) {
+  sparks.push({x, y, life: 10, maxLife: 10});
+}
+
+function roundRect(x,y,w,h,r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+}
+
+// Draws a smooth rounded "capsule" limb between two points, with an optional
+// subtle dark outline underneath for a cleaner, less blocky sprite look.
+function capsule(x1, y1, x2, y2, width, color, outline) {
+  if (outline) {
+    ctx.strokeStyle = outline;
+    ctx.lineWidth = width + 2.2;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+  }
+  ctx.strokeStyle = color;
+  ctx.lineWidth = width;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+}
+
+function drawBackground() {
+  // rotate through three distinct backdrops so consecutive stages don't feel the same
+  const variant = (stage - 1) % 3;
+  if (variant === 0) drawBackgroundSunset();
+  else if (variant === 1) drawBackgroundNight();
+  else drawBackgroundDay();
+}
+
+function drawBackgroundDay() {
+  // bright daytime bamboo forest - the third backdrop variant for extra stage variety
+  const horizonY = groundY * 0.62;
+  const g = ctx.createLinearGradient(0,0,0,horizonY+40);
+  g.addColorStop(0, '#8fd0f0');
+  g.addColorStop(0.55, '#c9ecf5');
+  g.addColorStop(1, '#eaf8e8');
+  ctx.fillStyle = g;
+  ctx.fillRect(0,0,W,horizonY+40);
+
+  // soft drifting clouds
+  ctx.save();
+  ctx.globalAlpha = 0.8;
+  ctx.fillStyle = '#ffffff';
+  for (let i=0;i<5;i++) {
+    const cx = ((i*220 - cameraX*0.1) % (W+300)) - 150;
+    const cy = 30 + i*22;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, 38, 14, 0, 0, Math.PI*2);
+    ctx.ellipse(cx+30, cy+4, 26, 11, 0, 0, Math.PI*2);
+    ctx.ellipse(cx-28, cy+5, 24, 10, 0, 0, Math.PI*2);
+    ctx.fill();
+  }
+  ctx.restore();
+
+  // sun (slow parallax drift so it doesn't feel locked to the player)
+  const daySunX = W*0.82 - cameraX*0.15;
+  const sunG = ctx.createRadialGradient(daySunX, 55, 4, daySunX, 55, 46);
+  sunG.addColorStop(0, '#fffdf0');
+  sunG.addColorStop(1, 'rgba(255,253,240,0)');
+  ctx.fillStyle = sunG;
+  ctx.beginPath(); ctx.arc(daySunX, 55, 46, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#fffef2';
+  ctx.beginPath(); ctx.arc(daySunX, 55, 22, 0, Math.PI*2); ctx.fill();
+
+  // misty layered green mountains, parallax
+  ctx.save();
+  ctx.translate(-cameraX*0.15, 0);
+  ctx.fillStyle = 'rgba(120,150,120,0.55)';
+  ctx.beginPath();
+  ctx.moveTo(0, horizonY+10);
+  ctx.quadraticCurveTo(120, horizonY-60, 260, horizonY-20);
+  ctx.quadraticCurveTo(360, horizonY+6, 460, horizonY-10);
+  ctx.lineTo(460, horizonY+10);
+  ctx.closePath();
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(W, horizonY+10);
+  ctx.quadraticCurveTo(W-140, horizonY-45, W-260, horizonY-14);
+  ctx.quadraticCurveTo(W-340, horizonY+8, W-420, horizonY-6);
+  ctx.lineTo(W-420, horizonY+10);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+
+  // nearer bamboo/forest tree line along the horizon
+  ctx.save();
+  ctx.translate(-cameraX*0.4, 0);
+  ctx.fillStyle = '#3a6b3a';
+  for (let i=-1;i<12;i++) {
+    const tx = i*90 + 20;
+    ctx.beginPath();
+    ctx.ellipse(tx, horizonY-6, 34, 44, 0, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = '#2e5a2e';
+    ctx.beginPath();
+    ctx.ellipse(tx+16, horizonY-2, 22, 30, 0, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = '#3a6b3a';
+  }
+  ctx.restore();
+
+  // hazy mist band at the horizon for depth
+  const mistG = ctx.createLinearGradient(0, horizonY-20, 0, horizonY+20);
+  mistG.addColorStop(0, 'rgba(255,255,255,0)');
+  mistG.addColorStop(0.5, 'rgba(255,255,255,0.5)');
+  mistG.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = mistG;
+  ctx.fillRect(0, horizonY-20, W, 40);
+
+  // ground fills the rest (grassy dirt path, no water in this variant)
+  const grassG = ctx.createLinearGradient(0, horizonY, 0, groundY);
+  grassG.addColorStop(0, '#7fae5a');
+  grassG.addColorStop(1, '#5a8a42');
+  ctx.fillStyle = grassG;
+  ctx.fillRect(0, horizonY, W, groundY-horizonY);
+
+  drawGroundAndPit('#3a6b3a');
+}
+
+function drawGroundAndPit(edgeColor) {
+  function pseudoRandom(seed) {
+    const v = Math.sin(seed*12.9898) * 43758.5453;
+    return v - Math.floor(v);
+  }
+
+  // figure out stone zones (screen space) around every pit, so the dirt/grass texture can skip them
+  const stoneZones = pits.map(p => ({
+    x1: p.x - 260 - cameraX,
+    x2: p.x + 260 - cameraX
+  }));
+  function inStoneZone(sx) { return stoneZones.some(z => sx > z.x1 - 10 && sx < z.x2 + 10); }
+
+  // base dirt ground across the whole width
+  const gg = ctx.createLinearGradient(0, groundY, 0, H);
+  gg.addColorStop(0, '#5a4530');
+  gg.addColorStop(1, '#2c1f14');
+  ctx.fillStyle = gg;
+  ctx.fillRect(0, groundY, W, H-groundY);
+
+  // mottled dirt speckles - deterministic per world position so they don't flicker while scrolling
+  const specStep = 40;
+  const specStart = Math.floor((cameraX - specStep) / specStep) * specStep;
+  for (let wx = specStart; wx < cameraX + W + specStep; wx += specStep) {
+    const sx = wx - cameraX;
+    if (inStoneZone(sx)) continue;
+    const r1 = pseudoRandom(wx*0.31);
+    const r2 = pseudoRandom(wx*0.77 + 11);
+    const py = groundY + 8 + r1*(H-groundY-14);
+    const size = 2.5 + r2*4;
+    ctx.fillStyle = `rgba(20,12,6,${(0.16+r1*0.16).toFixed(2)})`;
+    ctx.beginPath();
+    ctx.ellipse(sx + r2*specStep, py, size, size*0.6, 0, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  // small grass tufts sprouting along the top edge
+  const tuftStep = 70;
+  const tuftStart = Math.floor((cameraX - tuftStep) / tuftStep) * tuftStep;
+  for (let wx = tuftStart; wx < cameraX + W + tuftStep; wx += tuftStep) {
+    const sx = wx - cameraX;
+    if (inStoneZone(sx)) continue;
+    const r = pseudoRandom(wx*0.53 + 3);
+    if (r < 0.45) continue; // sparse - not every spot gets a tuft
+    const tx = sx + r*tuftStep*0.6;
+    const bladeH = 5 + pseudoRandom(wx*1.7)*5;
+    ctx.strokeStyle = `hsl(${95+pseudoRandom(wx*2.1)*20}, 42%, ${26+pseudoRandom(wx)*10}%)`;
+    ctx.lineWidth = 1.6;
+    ctx.lineCap = 'round';
+    for (let b=-1; b<=1; b++) {
+      ctx.beginPath();
+      ctx.moveTo(tx + b*2.5, groundY+1);
+      ctx.quadraticCurveTo(tx + b*4, groundY-bladeH*0.6, tx + b*1.5, groundY-bladeH);
+      ctx.stroke();
+    }
+  }
+
+  // stone-tiled patches around each pit - a distinct, nicer-looking hazard zone
+  for (const z of stoneZones) {
+    const clampedX1 = Math.max(0, z.x1);
+    const clampedX2 = Math.min(W, z.x2);
+    if (clampedX2 > clampedX1) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(clampedX1, groundY, clampedX2-clampedX1, H-groundY);
+      ctx.clip();
+      const sg = ctx.createLinearGradient(0, groundY, 0, H);
+      sg.addColorStop(0, '#6b6f76');
+      sg.addColorStop(1, '#33363c');
+      ctx.fillStyle = sg;
+      ctx.fillRect(clampedX1, groundY, clampedX2-clampedX1, H-groundY);
+      ctx.strokeStyle = 'rgba(0,0,0,0.4)';
+      ctx.lineWidth = 1.4;
+      const tileW = 46;
+      const startX = z.x1 - (((z.x1 % tileW) + tileW) % tileW);
+      for (let x = startX; x < z.x2+tileW; x += tileW) {
+        ctx.beginPath();
+        ctx.moveTo(x, groundY);
+        ctx.lineTo(x, H);
+        ctx.stroke();
+      }
+      for (let y = groundY+14; y < H; y += 20) {
+        ctx.beginPath();
+        ctx.moveTo(clampedX1, y);
+        ctx.lineTo(clampedX2, y);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+  }
+
+  // every pit itself - a dark void you must jump over
+  for (const p of pits) {
+    const px1 = p.x - p.halfW - cameraX;
+    const px2 = p.x + p.halfW - cameraX;
+    if (px2 <= 0 || px1 >= W) continue;
+    const x1 = Math.max(-20, px1);
+    const x2 = Math.min(W+20, px2);
+    const voidG = ctx.createLinearGradient(0, groundY, 0, H);
+    voidG.addColorStop(0, '#050608');
+    voidG.addColorStop(1, '#000000');
+    ctx.fillStyle = voidG;
+    ctx.fillRect(x1, groundY-2, x2-x1, H-groundY+2);
+    ctx.strokeStyle = edgeColor;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(x1, groundY+1); ctx.lineTo(x1, groundY+18);
+    ctx.moveTo(x2, groundY+1); ctx.lineTo(x2, groundY+18);
+    ctx.stroke();
+    ctx.fillStyle = '#1c1c1c';
+    ctx.beginPath(); ctx.arc(x1+6, groundY+5, 3, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(x2-8, groundY+7, 4, 0, Math.PI*2); ctx.fill();
+    // thin decorative divider pillar for the "two pits in a row" look
+    if (p.dividerAt !== undefined) {
+      const dx = p.dividerAt - cameraX;
+      if (dx > x1 && dx < x2) {
+        ctx.fillStyle = '#3a3d42';
+        ctx.fillRect(dx-4, groundY+2, 8, 22);
+        ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(dx-4, groundY+2, 8, 22);
+      }
+    }
+  }
+
+  // the stone block obstacle, if this stage has one
+  if (block) {
+    const bx1 = block.x - block.halfW - cameraX;
+    const bx2 = block.x + block.halfW - cameraX;
+    if (bx2 > 0 && bx1 < W) {
+      const bTop = groundY - block.height;
+      const rg = ctx.createLinearGradient(0, bTop, 0, groundY);
+      rg.addColorStop(0, '#8a8f96');
+      rg.addColorStop(1, '#4c4f54');
+      ctx.fillStyle = rg;
+      ctx.fillRect(bx1, bTop, bx2-bx1, block.height+2);
+      ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(bx1, bTop, bx2-bx1, block.height+2);
+      // a few cracks/blocks for texture
+      ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(bx1+(bx2-bx1)*0.35, bTop); ctx.lineTo(bx1+(bx2-bx1)*0.35, groundY);
+      ctx.moveTo(bx1+(bx2-bx1)*0.68, bTop); ctx.lineTo(bx1+(bx2-bx1)*0.68, groundY);
+      ctx.stroke();
+      // warning stripe on top edge
+      ctx.fillStyle = edgeColor;
+      ctx.fillRect(bx1, bTop, bx2-bx1, 3);
+    }
+  }
+
+  // top edge highlight line, skipping across every pit gap
+  ctx.strokeStyle = edgeColor;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  let cursor = 0;
+  const sortedGaps = pits
+    .map(p => ({ x1: Math.max(0, p.x - p.halfW - cameraX), x2: Math.min(W, p.x + p.halfW - cameraX) }))
+    .filter(g => g.x2 > 0 && g.x1 < W)
+    .sort((a,b) => a.x1 - b.x1);
+  for (const gap of sortedGaps) {
+    ctx.moveTo(cursor, groundY+1);
+    ctx.lineTo(Math.max(cursor, gap.x1), groundY+1);
+    cursor = gap.x2;
+  }
+  ctx.moveTo(cursor, groundY+1);
+  ctx.lineTo(W, groundY+1);
+  ctx.stroke();
+}
+function drawBackgroundSunset() {
+  // sunset sky - pink to purple, C64 torii-gate style
+  const horizonY = groundY * 0.62;
+  const g = ctx.createLinearGradient(0,0,0,horizonY+40);
+  g.addColorStop(0, '#3a2050');
+  g.addColorStop(0.35, '#8a3a5a');
+  g.addColorStop(0.65, '#d9607a');
+  g.addColorStop(0.85, '#f2a45a');
+  g.addColorStop(1, '#ffd27a');
+  ctx.fillStyle = g;
+  ctx.fillRect(0,0,W,horizonY+40);
+
+  ctx.globalAlpha = 0.25;
+  ctx.fillStyle = '#e8e8f0';
+  for (let i=0;i<6;i++) {
+    const cy = 20 + i*18;
+    const cx = ((i*130 + frameCount*0.1) % (W+200)) - 100;
+    ctx.fillRect(cx, cy, 160, 5);
+  }
+  ctx.globalAlpha = 1;
+
+  const sunY = horizonY - 30;
+  const sunX = W*0.74 - cameraX*0.22; // off-center and drifting faster, since the camera keeps the player near screen-middle
+  ctx.save();
+  const sunG = ctx.createRadialGradient(sunX,sunY,2,sunX,sunY,50);
+  sunG.addColorStop(0,'#fff6c8');
+  sunG.addColorStop(0.6,'#ffe066');
+  sunG.addColorStop(1,'rgba(255,224,102,0)');
+  ctx.fillStyle = sunG;
+  ctx.beginPath();
+  ctx.arc(sunX, sunY, 50, 0, Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle = '#fff3a0';
+  ctx.beginPath();
+  ctx.arc(sunX, sunY, 26, 0, Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+
+  ctx.save();
+  ctx.translate(-cameraX*0.15, 0);
+  ctx.fillStyle = '#241633';
+  ctx.beginPath();
+  ctx.moveTo(0, horizonY+6);
+  ctx.quadraticCurveTo(90, horizonY-34, 200, horizonY-6);
+  ctx.quadraticCurveTo(280, horizonY+10, 340, horizonY-2);
+  ctx.lineTo(340, horizonY+6);
+  ctx.lineTo(0, horizonY+6);
+  ctx.closePath();
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(W, horizonY+6);
+  ctx.quadraticCurveTo(W-90, horizonY-30, W-190, horizonY-4);
+  ctx.quadraticCurveTo(W-260, horizonY+8, W-320, horizonY-2);
+  ctx.lineTo(W-320, horizonY+6);
+  ctx.lineTo(W, horizonY+6);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+
+  const waterG = ctx.createLinearGradient(0,horizonY,0,groundY);
+  waterG.addColorStop(0, '#4a3a7a');
+  waterG.addColorStop(1, '#241a45');
+  ctx.fillStyle = waterG;
+  ctx.fillRect(0, horizonY, W, groundY-horizonY);
+
+  ctx.save();
+  ctx.globalAlpha = 0.6;
+  ctx.fillStyle = '#ffdf80';
+  for (let i=0;i<7;i++) {
+    const rw = 46 - i*5;
+    const ry = horizonY + 6 + i*9;
+    if (ry > groundY-4) break;
+    ctx.fillRect(sunX-rw/2 + Math.sin(frameCount*0.05+i)*3, ry, rw, 4);
+  }
+  ctx.restore();
+
+  ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+  ctx.lineWidth = 1;
+  for (let i=0;i<4;i++) {
+    const ry = horizonY + 12 + i*16;
+    ctx.beginPath();
+    ctx.moveTo(0, ry);
+    ctx.lineTo(W, ry);
+    ctx.stroke();
+  }
+
+  ctx.save();
+  const gateWorldX = 850;
+  const gx = gateWorldX - cameraX, gTop = horizonY - 90, gBottom = groundY;
+  ctx.fillStyle = '#150a0a';
+  ctx.fillRect(gx-95, gTop+30, 16, gBottom-(gTop+30));
+  ctx.fillRect(gx+79, gTop+30, 16, gBottom-(gTop+30));
+  ctx.fillRect(gx-97, gTop+22, 20, 12);
+  ctx.fillRect(gx+77, gTop+22, 20, 12);
+  ctx.fillRect(gx-125, gTop, 250, 14);
+  ctx.fillRect(gx-133, gTop+12, 266, 8);
+  ctx.beginPath();
+  ctx.moveTo(gx-133, gTop+12); ctx.lineTo(gx-125, gTop); ctx.lineTo(gx-115, gTop+12); ctx.closePath(); ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(gx+133, gTop+12); ctx.lineTo(gx+125, gTop); ctx.lineTo(gx+115, gTop+12); ctx.closePath(); ctx.fill();
+  ctx.fillRect(gx-105, gTop+38, 210, 10);
+  ctx.fillRect(gx-6, gTop+22, 12, 20);
+  ctx.restore();
+
+  ctx.fillStyle = '#1a1020';
+  ctx.beginPath();
+  ctx.ellipse(gx-140, groundY-6, 22, 10, 0, 0, Math.PI*2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(gx+150, groundY-4, 16, 8, 0, 0, Math.PI*2);
+  ctx.fill();
+
+  drawGroundAndPit('#ffcc00');
+}
+
+function drawBackgroundNight() {
+  // moonlit mountain dojo - cool blue/teal night scene for later stages
+  const horizonY = groundY * 0.62;
+  const g = ctx.createLinearGradient(0,0,0,horizonY+40);
+  g.addColorStop(0, '#0a1030');
+  g.addColorStop(0.4, '#152048');
+  g.addColorStop(0.7, '#1e3a5f');
+  g.addColorStop(1, '#2f5a6e');
+  ctx.fillStyle = g;
+  ctx.fillRect(0,0,W,horizonY+40);
+
+  // stars
+  ctx.fillStyle = '#fff';
+  for (let i=0;i<50;i++) {
+    const sx = (i*137) % W;
+    const sy = (i*89) % (horizonY*0.85);
+    const tw = 0.4 + 0.5*Math.abs(Math.sin(frameCount*0.03 + i));
+    ctx.globalAlpha = tw;
+    ctx.fillRect(sx, sy, 1.6, 1.6);
+  }
+  ctx.globalAlpha = 1;
+
+  // full moon
+  const moonY = horizonY * 0.32;
+  const moonX = W*0.78 - cameraX*0.15; // parallax drift so it doesn't feel locked to the player
+  ctx.save();
+  const moonG = ctx.createRadialGradient(moonX, moonY, 4, moonX, moonY, 55);
+  moonG.addColorStop(0,'#fdfefa');
+  moonG.addColorStop(0.6,'#dfe9e6');
+  moonG.addColorStop(1,'rgba(223,233,230,0)');
+  ctx.fillStyle = moonG;
+  ctx.beginPath();
+  ctx.arc(moonX, moonY, 55, 0, Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle = '#eef4f0';
+  ctx.beginPath();
+  ctx.arc(moonX, moonY, 30, 0, Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(180,200,196,0.35)';
+  ctx.beginPath(); ctx.arc(moonX-10, moonY-8, 5, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(moonX+8, moonY+6, 7, 0, Math.PI*2); ctx.fill();
+  ctx.restore();
+
+  // layered mountain silhouettes
+  ctx.save();
+  ctx.translate(-cameraX*0.15, 0);
+  ctx.fillStyle = '#16233a';
+  ctx.beginPath();
+  ctx.moveTo(0, horizonY+6);
+  ctx.lineTo(0, horizonY-40);
+  ctx.lineTo(120, horizonY-90);
+  ctx.lineTo(220, horizonY-50);
+  ctx.lineTo(320, horizonY-100);
+  ctx.lineTo(420, horizonY-40);
+  ctx.lineTo(420, horizonY+6);
+  ctx.closePath();
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(W, horizonY+6);
+  ctx.lineTo(W, horizonY-30);
+  ctx.lineTo(W-100, horizonY-70);
+  ctx.lineTo(W-200, horizonY-35);
+  ctx.lineTo(W-300, horizonY-85);
+  ctx.lineTo(W-400, horizonY-30);
+  ctx.lineTo(W-400, horizonY+6);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+
+  // lake
+  const waterG = ctx.createLinearGradient(0,horizonY,0,groundY);
+  waterG.addColorStop(0, '#20415a');
+  waterG.addColorStop(1, '#0f2233');
+  ctx.fillStyle = waterG;
+  ctx.fillRect(0, horizonY, W, groundY-horizonY);
+
+  // moon reflection
+  ctx.save();
+  ctx.globalAlpha = 0.45;
+  ctx.fillStyle = '#dfe9e6';
+  for (let i=0;i<6;i++) {
+    const rw = 40 - i*5;
+    const ry = horizonY + 6 + i*9;
+    if (ry > groundY-4) break;
+    ctx.fillRect(moonX-rw/2 + Math.sin(frameCount*0.05+i)*3, ry, rw, 4);
+  }
+  ctx.restore();
+
+  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+  ctx.lineWidth = 1;
+  for (let i=0;i<4;i++) {
+    const ry = horizonY + 12 + i*16;
+    ctx.beginPath();
+    ctx.moveTo(0, ry);
+    ctx.lineTo(W, ry);
+    ctx.stroke();
+  }
+
+  // bamboo grove silhouettes flanking a stone dojo gate
+  ctx.fillStyle = '#0c1420';
+  for (const bx of [40, 75, 110, W-40, W-75, W-110]) {
+    ctx.fillRect(bx, horizonY-140, 10, 140+ (groundY-horizonY));
+    // bamboo joint rings
+    ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+    ctx.lineWidth = 2;
+    for (let j=0;j<5;j++) {
+      ctx.beginPath();
+      ctx.moveTo(bx, horizonY-100+j*40);
+      ctx.lineTo(bx+10, horizonY-100+j*40);
+      ctx.stroke();
+    }
+    // leaves
+    ctx.beginPath();
+    ctx.moveTo(bx+5, horizonY-140);
+    ctx.lineTo(bx+22, horizonY-155);
+    ctx.lineTo(bx+8, horizonY-130);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // simple stone gate posts (torii-like but square, stone-colored)
+  const gateWorldX = 850;
+  const gx = gateWorldX - cameraX, gTop = horizonY - 70, gBottom = groundY;
+  ctx.fillStyle = '#1a2536';
+  ctx.fillRect(gx-70, gTop+10, 14, gBottom-(gTop+10));
+  ctx.fillRect(gx+56, gTop+10, 14, gBottom-(gTop+10));
+  ctx.fillRect(gx-80, gTop, 174, 14);
+  ctx.fillStyle = '#243349';
+  ctx.fillRect(gx-80, gTop-6, 174, 6);
+
+  // ground
+  drawGroundAndPit('#7fd8ff');
+}
+
+function drawSword(fromX, fromY, angle, dir) {
+  // a long straight katana blade extending from the fist, for the ninja's sword slash
+  ctx.save();
+  ctx.translate(fromX, fromY);
+  ctx.rotate(angle);
+  const len = 64;
+  // blade
+  const bladeG = ctx.createLinearGradient(0,0,len,0);
+  bladeG.addColorStop(0, '#7a8088');
+  bladeG.addColorStop(0.5, '#eef2f4');
+  bladeG.addColorStop(1, '#c4c9cd');
+  ctx.fillStyle = bladeG;
+  ctx.beginPath();
+  ctx.moveTo(8, -4.5);
+  ctx.lineTo(len, -1.6);
+  ctx.lineTo(len+9, 0);
+  ctx.lineTo(len, 1.6);
+  ctx.lineTo(8, 4.5);
+  ctx.closePath();
+  ctx.fill();
+  // center ridge highlight for a bit of shine
+  ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(10, 0);
+  ctx.lineTo(len+2, 0);
+  ctx.stroke();
+  ctx.strokeStyle = 'rgba(20,20,24,0.5)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(8, -4.5); ctx.lineTo(len, -1.6); ctx.lineTo(len+9, 0); ctx.lineTo(len, 1.6); ctx.lineTo(8, 4.5); ctx.closePath();
+  ctx.stroke();
+  // hilt + guard
+  ctx.fillStyle = '#1a1a1e';
+  ctx.fillRect(-11, -3.2, 18, 6.4);
+  ctx.fillStyle = '#8a1f1f';
+  ctx.fillRect(5, -6.5, 4, 13);
+  ctx.fillStyle = '#c9a24a';
+  ctx.beginPath(); ctx.arc(-11, 0, 3, 0, Math.PI*2); ctx.fill();
+  ctx.restore();
+}
+
+function drawNunchaku(fromX, fromY, dir, swing) {
+  // two wooden sticks joined by a short chain, swinging out from the hand
+  const stickLen = 20;
+  const angle = swing * Math.PI * 1.5 * dir;
+  const midX = fromX + Math.cos(angle) * stickLen;
+  const midY = fromY + Math.sin(angle) * stickLen * 0.4;
+  ctx.strokeStyle = '#4a2f1a';
+  ctx.lineWidth = 4.5;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(fromX, fromY);
+  ctx.lineTo(midX, midY);
+  ctx.stroke();
+  // chain link
+  ctx.strokeStyle = '#8a8f96';
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.moveTo(midX, midY);
+  const endX = midX + Math.cos(angle + swing*2) * stickLen;
+  const endY = midY + Math.sin(angle + swing*2) * stickLen * 0.4;
+  ctx.lineTo(endX, endY);
+  ctx.stroke();
+  ctx.strokeStyle = '#4a2f1a';
+  ctx.lineWidth = 4.5;
+  ctx.beginPath();
+  ctx.moveTo(midX, midY);
+  ctx.lineTo(endX, endY);
+  ctx.stroke();
+}
+
+function drawChain(fromX, fromY, dir, swing) {
+  // a short swinging chain trailing from the fist, whipping out as the punch/kick connects
+  const links = 6;
+  const len = 14 + swing*22;
+  let px = fromX, py = fromY;
+  for (let i=1;i<=links;i++) {
+    const t = i/links;
+    const nx = fromX + dir*len*t;
+    const ny = fromY + Math.sin(t*Math.PI*2.4 + swing*4)*4;
+    // each link drawn as a small dark oval so the chain reads clearly against any background
+    ctx.strokeStyle = '#3a3d42';
+    ctx.lineWidth = 3.2;
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(nx, ny);
+    ctx.stroke();
+    ctx.fillStyle = '#9aa0a6';
+    ctx.beginPath();
+    ctx.arc(nx, ny, 2.6, 0, Math.PI*2);
+    ctx.fill();
+    px = nx; py = ny;
+  }
+  // weight/hook at the end
+  ctx.fillStyle = '#4a4e54';
+  ctx.beginPath();
+  ctx.arc(px, py, 4.5, 0, Math.PI*2);
+  ctx.fill();
+  ctx.strokeStyle = '#1a1c1e';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+}
+
+function drawFist(cx, cy, angle, size, color, outlineColor, facing) {
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(angle);
+  // mirror the vertical details when facing left, so the thumb/knuckles don't flip
+  // upside-down relative to the arm - keeps them anatomically consistent either way
+  ctx.scale(1, facing < 0 ? -1 : 1);
+  // clearly wider than the forearm so it reads as a knuckle/fist, not a continuation of a stick
+  const len = size * 1.5;
+  const wid = size * 1.3;
+  ctx.fillStyle = color;
+  roundRect(-len*0.28, -wid*0.5, len, wid, wid*0.4);
+  ctx.fill();
+  ctx.strokeStyle = outlineColor;
+  ctx.lineWidth = 1.8;
+  roundRect(-len*0.28, -wid*0.5, len, wid, wid*0.4);
+  ctx.stroke();
+  // knuckle dots for texture
+  ctx.fillStyle = shadeColor(color, -22);
+  ctx.beginPath(); ctx.arc(len*0.2, -wid*0.22, wid*0.13, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(len*0.42, -wid*0.16, wid*0.12, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(len*0.02, -wid*0.24, wid*0.12, 0, Math.PI*2); ctx.fill();
+  // curled fingers along the leading edge - three short segments dividing the front face
+  ctx.strokeStyle = shadeColor(color, -32);
+  ctx.lineWidth = Math.max(1, size*0.09);
+  ctx.lineCap = 'round';
+  for (let i=-1; i<=1; i++) {
+    ctx.beginPath();
+    ctx.moveTo(len*0.62, i*wid*0.28);
+    ctx.lineTo(len*0.78, i*wid*0.28);
+    ctx.stroke();
+  }
+  // small thumb bump on the near side
+  ctx.fillStyle = shadeColor(color, -8);
+  ctx.beginPath();
+  ctx.ellipse(len*0.1, -wid*0.52, wid*0.22, wid*0.14, -0.3, 0, Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawFighter(f) {
+  const {x, y, w, h, color, facing, ducking, attackType, attackProgress, attackLow, hurt, walkPhase, isPlayer, style, isBoss} = f;
+  const hairColor = f.hairColor || '#151515';
+  ctx.save();
+  ctx.translate(x, y);
+
+  ctx.fillStyle = 'rgba(0,0,0,0.4)';
+  ctx.beginPath();
+  ctx.ellipse(0, 4, w*0.68, 7, 0, 0, Math.PI*2);
+  ctx.fill();
+
+  const prog = attackProgress || 0;
+  const kickEase = attackType === 'kick' ? Math.sin(Math.min(prog,1) * Math.PI) : 0;
+  const punchEase = attackType === 'punch' ? Math.sin(Math.min(prog,1) * Math.PI) : 0;
+
+  const bob = walkPhase ? Math.abs(Math.sin(walkPhase))*2.2 : 0;
+  const bodyH = (ducking ? h*0.6 : h*0.95) - bob - kickEase*3;
+
+  const skin = f.skin || '#e8b382';
+  const gi = hurt ? shadeColor(color, 85) : color;
+  const pants = f.pants || shadeColor(gi, -15);
+  const outline = 'rgba(12,8,16,0.55)';
+  const legW = w*0.22;
+  const hipStanceOut = w*0.11; // narrow hip - shared with the torso's waist width below so they always connect with no gap
+  const hipY = -bodyH*0.5;
+  const airborne = f.airborne;
+  const airTime = f.airTime || 0;
+
+  // a fun full-body somersault while airborne (plain jump only, not mid-attack)
+  ctx.save();
+  if (airborne && !attackType) {
+    const flipT = Math.min(airTime / 26, 1);
+    ctx.translate(0, hipY);
+    ctx.rotate(facing * flipT * Math.PI * 2);
+    ctx.translate(0, -hipY);
+  }
+
+  // ---- LEGS: wide guard stance by default, real alternating gait when walking ----
+  if (attackType === 'kick') {
+    // planted brace leg, wide stance, slight lean into the kick
+    const backHipX = facing>0 ? -w*0.22 : w*0.22;
+    const backFootX = backHipX - facing*kickEase*4;
+    const backKneeX = (backHipX+backFootX)/2;
+    const backKneeY = hipY*0.55;
+    capsule(backHipX, hipY, backKneeX, backKneeY, legW, pants, outline);
+    capsule(backKneeX, backKneeY, backFootX, 0, legW*0.92, pants, outline);
+    ctx.fillStyle = '#141414';
+    ctx.beginPath();
+    ctx.ellipse(backFootX + facing*4, 1, 9, 4.5, 0, 0, Math.PI*2);
+    ctx.fill();
+
+    // kicking leg: hip pivot for the normal high kick (whole leg swings through an arc).
+    // Low kick instead moves the foot along a straight line from a tucked chamber
+    // position to a fully extended point - a real linear thrust, not a hinge swing.
+    const hipX = facing>0 ? w*0.08 : -w*0.08;
+    let kneeX, kneeY, footX, footY, shinAngle;
+    if (attackLow) {
+      const legLen = h*0.62;
+      const footStart = { x: hipX + facing*legLen*0.15, y: hipY + legLen*0.58 };
+      const footEnd   = { x: hipX + facing*legLen*0.98, y: hipY + legLen*0.14 };
+      footX = footStart.x + (footEnd.x - footStart.x) * kickEase;
+      footY = footStart.y + (footEnd.y - footStart.y) * kickEase;
+      kneeX = (hipX + footX) / 2;
+      kneeY = (hipY + footY) / 2 + (1 - kickEase) * legLen * 0.2; // knee sags while chambered, straightens on extension
+      shinAngle = Math.atan2(footY - kneeY, (footX - kneeX) || 0.001);
+    } else {
+      const thighLen = bodyH*0.32;
+      const shinLen = bodyH*0.34;
+      const thighAngle = -0.75 - kickEase*1.55; // chambers up toward head height
+      const kneeBend = (1-kickEase) * 1.15;
+      kneeX = hipX - facing*thighLen*Math.sin(thighAngle);
+      kneeY = hipY + thighLen*Math.cos(thighAngle);
+      shinAngle = thighAngle + kneeBend;
+      footX = kneeX - facing*shinLen*Math.sin(shinAngle);
+      footY = kneeY + shinLen*Math.cos(shinAngle);
+    }
+    capsule(hipX, hipY, kneeX, kneeY, legW, pants, outline);
+    capsule(kneeX, kneeY, footX, footY, legW*0.88, pants, outline);
+    ctx.fillStyle = '#141414';
+    ctx.save();
+    ctx.translate(footX, footY);
+    ctx.rotate(shinAngle);
+    ctx.beginPath();
+    ctx.ellipse(0, 6, 9.5, 5, 0, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  } else if (airborne) {
+    // legs tuck up during a jump instead of hanging stiff and straight
+    const tuckAmt = Math.min(airTime / 10, 1); // quickly pulls in right as the jump starts
+    const hipOut = hipStanceOut;
+    const kneeLift = bodyH * 0.4 * tuckAmt;
+    const tuckLegs = [
+      { hipX: -hipOut, side: -1 },
+      { hipX:  hipOut, side:  1 },
+    ];
+    for (const leg of tuckLegs) {
+      const kneeX = leg.hipX + leg.side*w*0.1 + facing*w*0.06*tuckAmt;
+      const kneeY = hipY - kneeLift;
+      const footX = kneeX + leg.side*w*0.04;
+      const footY = kneeY + bodyH*0.18;
+      capsule(leg.hipX, hipY, kneeX, kneeY, legW, pants, outline);
+      capsule(kneeX, kneeY, footX, footY, legW*0.88, pants, outline);
+      ctx.fillStyle = '#141414';
+      ctx.beginPath();
+      ctx.ellipse(footX, footY - 1, 8, 4, 0, 0, Math.PI*2);
+      ctx.fill();
+    }
+  } else {
+    const hipOut = hipStanceOut;   // narrow at the hip/waist
+    const footOut = w*0.32;        // wide, firmly planted feet - the classic "A" fighting stance
+    const strideAmp = w*0.17;
+    const liftAmp = bodyH*0.13;
+    const legs = [
+      { hipX: -hipOut, footRest: -footOut, phase: walkPhase },
+      { hipX:  hipOut, footRest:  footOut, phase: walkPhase + Math.PI },
+    ];
+    for (const leg of legs) {
+      const moving = !!walkPhase;
+      const stride = moving ? Math.sin(leg.phase) * strideAmp : 0;
+      const lift = moving ? Math.max(0, Math.sin(leg.phase)) * liftAmp : 0;
+      const footX = leg.footRest + stride;
+      const footY = -lift;
+      // knee sits on the straight hip->foot line (a clean "A" taper, no outward bulge)
+      const kneeX = (leg.hipX + footX) / 2;
+      const kneeY = hipY*0.55 - lift*0.5;
+      capsule(leg.hipX, hipY, kneeX, kneeY, legW, pants, outline);
+      capsule(kneeX, kneeY, footX, footY, legW*0.88, pants, outline);
+      ctx.fillStyle = '#141414';
+      ctx.beginPath();
+      ctx.ellipse(footX, footY - 1, 9, 4.5, 0, 0, Math.PI*2);
+      ctx.fill();
+    }
+  }
+
+  // ---- TORSO: tapered V-shape (broad shoulders, narrow waist), leans with strikes ----
+  const torsoRotate = attackType === 'kick' ? -facing * kickEase * 0.3 : (attackType === 'punch' ? facing * punchEase * 0.26 : 0);
+  const shoulderHalfW = w*0.38;
+  const waistHalfW = hipStanceOut; // matches the legs exactly - no gap, no overlap
+  const torsoTop = hipY - bodyH*0.46;
+  const torsoBottom = hipY + 2;
+
+  ctx.save();
+  ctx.translate(0, hipY);
+  ctx.rotate(torsoRotate);
+  ctx.translate(0, -hipY);
+
+  const tg = ctx.createLinearGradient(0, torsoTop, 0, torsoBottom);
+  tg.addColorStop(0, gi);
+  tg.addColorStop(1, shadeColor(gi, -20));
+  ctx.beginPath();
+  ctx.moveTo(-waistHalfW, torsoBottom);
+  ctx.lineTo(-shoulderHalfW*0.9, torsoTop + 10);
+  ctx.quadraticCurveTo(-shoulderHalfW, torsoTop, -shoulderHalfW*0.45, torsoTop - 3);
+  ctx.lineTo(shoulderHalfW*0.45, torsoTop - 3);
+  ctx.quadraticCurveTo(shoulderHalfW, torsoTop, shoulderHalfW*0.9, torsoTop + 10);
+  ctx.lineTo(waistHalfW, torsoBottom);
+  // notch cut UP at the center (the crotch gap between the legs) instead of bulging down -
+  // this way the torso still fully reaches both hip points with no side gap, but the
+  // space between the legs stays visually open rather than getting painted over
+  ctx.lineTo(waistHalfW*0.3, torsoBottom - 4);
+  ctx.quadraticCurveTo(0, torsoBottom - 11, -waistHalfW*0.3, torsoBottom - 4);
+  ctx.lineTo(-waistHalfW, torsoBottom);
+  ctx.closePath();
+  ctx.fillStyle = tg;
+  ctx.fill();
+  ctx.strokeStyle = outline;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // gi wrap-front V line
+  ctx.strokeStyle = shadeColor(gi,-35);
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(facing>0 ? -w*0.04 : w*0.04, torsoTop + 4);
+  ctx.lineTo(facing>0 ? w*0.16 : -w*0.16, torsoBottom - 6);
+  ctx.stroke();
+
+  // belt (stops short of the center notch so it doesn't re-cover the crotch gap)
+  ctx.fillStyle = '#111';
+  ctx.fillRect(-waistHalfW-1, torsoBottom-7, waistHalfW*2+2, 5);
+  ctx.fillRect(facing>0 ? w*0.01 : -w*0.09, torsoBottom-5, w*0.08, 10);
+
+  // ---- HEAD (large and bold so the face reads clearly at game scale) ----
+  const headR = w*0.4;
+  const neckY = torsoTop - 2;
+  const headCY = neckY - headR*0.62;
+  const fs = headR / 14; // feature scale, tuned so a headR of ~14 gives the base sizes below
+
+  ctx.fillStyle = skin;
+  ctx.fillRect(-w*0.08, neckY - 7, w*0.16, 10);
+  ctx.beginPath();
+  ctx.arc(0, headCY, headR, 0, Math.PI*2);
+  ctx.fill();
+  ctx.strokeStyle = outline;
+  ctx.lineWidth = 1.8;
+  ctx.stroke();
+
+  // hair
+  ctx.fillStyle = hairColor;
+  ctx.beginPath();
+  ctx.arc(0, headCY - 4*fs, headR*1.03, Math.PI, 0);
+  ctx.fill();
+  ctx.fillRect(-headR*1.02, headCY - 6*fs, headR*0.32, 13*fs);
+  ctx.fillRect(headR*0.7, headCY - 6*fs, headR*0.32, 13*fs);
+
+  // headband
+  ctx.fillStyle = isPlayer ? '#d32f2f' : (isBoss ? '#d4af37' : (style === 'biker' ? '#1a1a1a' : '#e8e8e8'));
+  ctx.fillRect(-headR*0.95, headCY - 12*fs, headR*1.9, 6*fs);
+  ctx.fillRect(facing>0 ? headR*0.85 : -headR*1.1, headCY - 9*fs, headR*0.45, 4*fs);
+
+  // face features - narrower, sharper eyes with a furrowed brow for a tougher look
+  const eyeY = headCY + 2*fs;
+  const eyeGap = headR*0.36;
+  const eyeXs = [-eyeGap, eyeGap];
+
+  for (const ex of eyeXs) {
+    const side = Math.sign(ex) || 1;
+    // eyebrow angled down toward the nose - a furrowed, angry scowl
+    const innerX = ex - side*4*fs;
+    const outerX = ex + side*4.5*fs;
+    ctx.strokeStyle = '#151515';
+    ctx.lineWidth = 2.6*fs;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(innerX, eyeY - 4*fs);
+    ctx.lineTo(outerX, eyeY - 9.5*fs);
+    ctx.stroke();
+
+    // narrow, sharper eye (less round doe-eye, more of a focused glare)
+    ctx.fillStyle = '#f0ece0';
+    ctx.beginPath();
+    ctx.ellipse(ex, eyeY + 0.5*fs, 3*fs, 1.7*fs, 0, 0, Math.PI*2);
+    ctx.fill();
+    ctx.strokeStyle = '#1a1a1a';
+    ctx.lineWidth = 1.1;
+    ctx.stroke();
+    // upper eyelid shadow pressing down for intensity
+    ctx.fillStyle = shadeColor(skin, -25);
+    ctx.beginPath();
+    ctx.ellipse(ex, eyeY - 0.6*fs, 3.1*fs, 1.3*fs, 0, Math.PI, 0);
+    ctx.fill();
+    ctx.fillStyle = '#151515';
+    ctx.beginPath();
+    ctx.arc(ex + facing*0.9*fs, eyeY + 0.6*fs, 1.35*fs, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  // biker sunglasses - dark shades covering both eyes
+  if (style === 'biker') {
+    ctx.fillStyle = '#0d0d0d';
+    roundRect(-eyeGap - 4*fs, eyeY - 3.2*fs, eyeGap*2 + 8*fs, 6.4*fs, 2.5*fs);
+    ctx.fill();
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(-2.5*fs, eyeY); ctx.lineTo(2.5*fs, eyeY);
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,0.25)';
+    ctx.beginPath();
+    ctx.ellipse(-eyeGap*0.6, eyeY - 1.2*fs, 1.6*fs, 0.8*fs, -0.4, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  // ninja/thrower face mask covering nose and mouth
+  const wearsMask = style === 'ninja';
+
+  if (!wearsMask) {
+    // nose (small, centered)
+    ctx.strokeStyle = shadeColor(skin, -40);
+    ctx.lineWidth = 2*fs;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(facing*1.5*fs, eyeY + 2*fs);
+    ctx.lineTo(facing*3*fs, eyeY + 8*fs);
+    ctx.stroke();
+
+    // mouth
+    const faceX = 0;
+    ctx.strokeStyle = '#6a2e20';
+    ctx.lineWidth = 2.6*fs;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    if (attackType) {
+      ctx.ellipse(faceX, eyeY + 15*fs, 4.5*fs, 3.4*fs, 0, 0, Math.PI*2);
+      ctx.fillStyle = '#3a140f';
+      ctx.fill();
+      ctx.stroke();
+    } else if (hurt) {
+      ctx.moveTo(faceX - 6*fs, eyeY + 17*fs);
+      ctx.quadraticCurveTo(faceX, eyeY + 12*fs, faceX + 6*fs, eyeY + 17*fs);
+      ctx.stroke();
+    } else {
+      // slight downturned scowl instead of a flat neutral line - reads tougher
+      ctx.moveTo(faceX - 6*fs, eyeY + 14.5*fs);
+      ctx.quadraticCurveTo(faceX, eyeY + 17.5*fs, faceX + 6*fs, eyeY + 14.5*fs);
+      ctx.stroke();
+    }
+
+    // the "old master" boss gets a wispy white beard
+    if (isBoss && hairColor === '#e8e8e8') {
+      ctx.fillStyle = '#eef0ee';
+      ctx.beginPath();
+      ctx.moveTo(-6*fs, eyeY + 13*fs);
+      ctx.quadraticCurveTo(0, eyeY + 26*fs, 6*fs, eyeY + 13*fs);
+      ctx.quadraticCurveTo(0, eyeY + 21*fs, -6*fs, eyeY + 13*fs);
+      ctx.closePath();
+      ctx.fill();
+    }
+  } else {
+    ctx.fillStyle = '#1c241c';
+    roundRect(-headR*0.62, eyeY + 3*fs, headR*1.24, headR*0.9, headR*0.3);
+    ctx.fill();
+  }
+
+  // ---- ARMS: raised guard by default (IK+ style), extend for strikes ----
+  const shoulderY = torsoTop + 10;
+  const frontSign = facing;
+  const armW = w*0.23;
+  const fistR = armW*0.85;
+
+  // guard targets: fists held out at chest/stomach height, clearly below the head
+  const frontShoulderX = frontSign*shoulderHalfW*0.75;
+  const frontFistGuard =  { x: frontSign*shoulderHalfW*2.05, y: shoulderY + 2 };
+  const backShoulderX = -frontSign*shoulderHalfW*0.75;
+  const backFistGuard =  { x: -frontSign*shoulderHalfW*0.28,  y: shoulderY + bodyH*0.18 };
+
+  // elbow sits below the straight shoulder->fist line by `bend` pixels, giving
+  // a natural bent-arm look; bend shrinks toward 0 as a punch reaches full extension
+  function elbowFor(sx, sy, fx, fy, bend) {
+    return { x: (sx+fx)/2, y: (sy+fy)/2 + bend };
+  }
+  const frontElbowGuard = elbowFor(frontShoulderX, shoulderY, frontFistGuard.x, frontFistGuard.y, 15);
+  const backElbowGuard = elbowFor(backShoulderX, shoulderY, backFistGuard.x, backFistGuard.y, 11);
+
+  function fistAngle(ex, ey, fx, fy) { return Math.atan2(fy-ey, fx-ex); }
+
+  if (attackType === 'punch') {
+    // reverse punch (gyaku-zuki): the REAR arm strikes while the torso twists into it,
+    // and the front/lead arm stays up guarding the face rather than throwing the punch
+    const windup = backShoulderX*(1 - punchEase*0.2);
+    const extend = frontSign*shoulderHalfW*(punchEase*2.9);
+    const reach = w*1.05*punchEase;
+    const strikeFist = { x: windup + extend, y: shoulderY - 4 };
+    // the elbow bend eases out toward 0 as the punch reaches full extension - arm visibly straightens
+    const strikeElbow = elbowFor(backShoulderX, shoulderY, strikeFist.x, strikeFist.y, 15 * (1 - punchEase));
+    capsule(backShoulderX, shoulderY, strikeElbow.x, strikeElbow.y, armW, shadeColor(gi,-8), outline);
+    capsule(strikeElbow.x, strikeElbow.y, strikeFist.x, strikeFist.y, armW*0.85, skin, outline);
+    drawFist(strikeFist.x, strikeFist.y, fistAngle(strikeElbow.x,strikeElbow.y,strikeFist.x,strikeFist.y), fistR, skin, outline, facing);
+    // front arm holds its guard position, pulling back slightly for counter-balance
+    const guardFist = { x: frontFistGuard.x * (1 - punchEase*0.25), y: frontFistGuard.y };
+    const guardElbow = elbowFor(frontShoulderX, shoulderY, guardFist.x, guardFist.y, 15);
+    capsule(frontShoulderX, shoulderY, guardElbow.x, guardElbow.y, armW, shadeColor(gi,-16), outline);
+    capsule(guardElbow.x, guardElbow.y, guardFist.x, guardFist.y, armW*0.85, skin, outline);
+    drawFist(guardFist.x, guardFist.y, fistAngle(guardElbow.x,guardElbow.y,guardFist.x,guardFist.y), fistR*0.9, skin, outline, facing);
+    if (punchEase > 0.55) {
+      ctx.strokeStyle = 'rgba(255,255,255,'+((punchEase-0.55)*0.7)+')';
+      ctx.lineWidth = 2;
+      for (let i=0;i<3;i++) {
+        const sx = strikeFist.x - frontSign*reach*0.2;
+        ctx.beginPath();
+        ctx.moveTo(sx, strikeFist.y - 5 + i*5);
+        ctx.lineTo(sx - frontSign*10, strikeFist.y - 5 + i*5);
+        ctx.stroke();
+      }
+    }
+    if (style === 'biker') drawChain(strikeFist.x, strikeFist.y, facing, punchEase);
+    if (f.drawSword) drawSword(strikeFist.x, strikeFist.y, fistAngle(strikeElbow.x,strikeElbow.y,strikeFist.x,strikeFist.y), facing);
+    if (f.hasNunchaku) drawNunchaku(strikeFist.x, strikeFist.y, facing, punchEase);
+  } else if (attackType === 'kick' && attackLow) {
+    // grounded sprawl pose: one hand plants on the ground for support while the leg thrusts out
+    const groundHand = { x: -frontSign*shoulderHalfW*0.85, y: -2 };
+    const groundElbow = elbowFor(backShoulderX, shoulderY, groundHand.x, groundHand.y, -6);
+    capsule(backShoulderX, shoulderY, groundElbow.x, groundElbow.y, armW, shadeColor(gi,-10), outline);
+    capsule(groundElbow.x, groundElbow.y, groundHand.x, groundHand.y, armW*0.85, skin, outline);
+    ctx.fillStyle = skin;
+    ctx.beginPath();
+    ctx.ellipse(groundHand.x, groundHand.y, 7, 4.5, 0, 0, Math.PI*2);
+    ctx.fill();
+    // other arm stays up for balance
+    const balanceFist = { x: frontSign*shoulderHalfW*0.5, y: shoulderY - bodyH*0.1 };
+    const balanceElbow = elbowFor(frontShoulderX, shoulderY, balanceFist.x, balanceFist.y, 10);
+    capsule(frontShoulderX, shoulderY, balanceElbow.x, balanceElbow.y, armW, shadeColor(gi,-16), outline);
+    capsule(balanceElbow.x, balanceElbow.y, balanceFist.x, balanceFist.y, armW*0.85, skin, outline);
+    drawFist(balanceFist.x, balanceFist.y, fistAngle(balanceElbow.x,balanceElbow.y,balanceFist.x,balanceFist.y), fistR*0.9, skin, outline, facing);
+  } else if (attackType === 'kick') {
+    const armPullX = -frontSign*shoulderHalfW*0.5;
+    const pullFist1 = { x: armPullX*0.6, y: shoulderY-bodyH*0.16 };
+    const pullFist2 = { x: armPullX*0.3, y: shoulderY-bodyH*0.18 };
+    const pullElbow1 = elbowFor(frontShoulderX, shoulderY, pullFist1.x, pullFist1.y, -10);
+    const pullElbow2 = elbowFor(backShoulderX, shoulderY, pullFist2.x, pullFist2.y, -8);
+    capsule(frontShoulderX, shoulderY, pullElbow1.x, pullElbow1.y, armW, shadeColor(gi,-10), outline);
+    capsule(pullElbow1.x, pullElbow1.y, pullFist1.x, pullFist1.y, armW*0.85, skin, outline);
+    capsule(backShoulderX, shoulderY, pullElbow2.x, pullElbow2.y, armW, shadeColor(gi,-10), outline);
+    capsule(pullElbow2.x, pullElbow2.y, pullFist2.x, pullFist2.y, armW*0.85, skin, outline);
+    drawFist(pullFist1.x, pullFist1.y, fistAngle(pullElbow1.x,pullElbow1.y,pullFist1.x,pullFist1.y), fistR*0.95, skin, outline, facing);
+    drawFist(pullFist2.x, pullFist2.y, fistAngle(pullElbow2.x,pullElbow2.y,pullFist2.x,pullFist2.y), fistR*0.9, skin, outline, facing);
+    if (style === 'biker') drawChain(pullFist1.x, pullFist1.y, facing, kickEase);
+    if (f.hasNunchaku) drawNunchaku(pullFist1.x, pullFist1.y, facing, kickEase);
+  } else {
+    const sway = walkPhase ? Math.sin(walkPhase)*3 : 0;
+    const ff = { x: frontFistGuard.x, y: frontFistGuard.y + sway*0.5 };
+    const bf = { x: backFistGuard.x, y: backFistGuard.y - sway*0.5 };
+    const fe = elbowFor(frontShoulderX, shoulderY, ff.x, ff.y, 15);
+    const be = elbowFor(backShoulderX, shoulderY, bf.x, bf.y, 11);
+    capsule(frontShoulderX, shoulderY, fe.x, fe.y, armW, shadeColor(gi,-10), outline);
+    capsule(fe.x, fe.y, ff.x, ff.y, armW*0.85, skin, outline);
+    capsule(backShoulderX, shoulderY, be.x, be.y, armW, shadeColor(gi,-18), outline);
+    capsule(be.x, be.y, bf.x, bf.y, armW*0.85, skin, outline);
+    drawFist(ff.x, ff.y, fistAngle(fe.x,fe.y,ff.x,ff.y), fistR, skin, outline, facing);
+    drawFist(bf.x, bf.y, fistAngle(be.x,be.y,bf.x,bf.y), fistR*0.9, skin, outline, facing);
+  }
+
+  ctx.restore(); // closes the airborne flip rotation
+
+  ctx.restore();
+  ctx.restore();
+}
+
+function shadeColor(hex, percent) {
+  const num = parseInt(hex.replace('#',''),16);
+  let r = (num>>16) + percent;
+  let g = ((num>>8)&0xff) + percent;
+  let b = (num&0xff) + percent;
+  r = Math.max(0,Math.min(255,r));
+  g = Math.max(0,Math.min(255,g));
+  b = Math.max(0,Math.min(255,b));
+  return '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);
+}
+
+function draw() {
+  ctx.save();
+  if (shake > 0) {
+    ctx.translate((Math.random()-0.5)*shake, (Math.random()-0.5)*shake);
+  }
+  ctx.clearRect(-10,-10,W+20,H+20);
+  drawBackground();
+
+  ctx.save();
+  ctx.translate(-cameraX, 0);
+
+  for (const en of enemies) {
+    if (en.x - cameraX < -160 || en.x - cameraX > W + 160) continue; // off-screen, skip the expensive draw entirely
+    if (en.state === 'dead') {
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, en.deadTimer/30);
+      ctx.translate(en.x, en.y);
+      ctx.rotate(Math.PI/2 * (1-en.deadTimer/30));
+      ctx.fillStyle = en.pal.shirt;
+      ctx.fillRect(-en.w/2, -8, en.w, 8);
+      ctx.fillStyle = en.pal.skin;
+      ctx.beginPath();
+      ctx.arc(en.w/2+4, -4, 6, 0, Math.PI*2);
+      ctx.fill();
+      ctx.restore();
+      continue;
+    }
+    const enAttackActive = en.state==='attack' && en.attackTimer < 20;
+    drawFighter({
+      x: en.x, y: en.y, w: en.w, h: en.h,
+      color: en.pal.shirt, skin: en.pal.skin, pants: en.pal.pants,
+      facing: en.dir, ducking: false,
+      attackType: enAttackActive ? en.attackKind : null,
+      attackProgress: enAttackActive ? 1 - (en.attackTimer/20) : 0,
+      hurt: en.hurtTimer>0,
+      walkPhase: en.state==='approach' ? en.walkPhase : 0,
+      airborne: !en.onGround,
+      airTime: en.onGround ? 0 : 6,
+      vy: en.vy,
+      isPlayer: false,
+      hairColor: en.hairColor,
+      isBoss: en.type === 'boss',
+      drawSword: en.swordSlashTimer > 0,
+      hasNunchaku: en.weapon === 'nunchaku',
+      style: en.type === 'boss' ? en.bossStyle : (en.type === 'biker' ? 'biker' : (en.type === 'thrower' ? 'ninja' : 'karate'))
+    });
+  }
+
+  // thrown knives / shurikens
+  for (const k of knives) {
+    if (k.bottle) {
+      const ky = groundY - 55;
+      ctx.save();
+      ctx.translate(k.x, ky);
+      ctx.rotate(frameCount*0.25 * (k.dir || 1));
+      ctx.fillStyle = 'rgba(126,230,126,0.85)';
+      ctx.fillRect(-4, -9, 8, 14);
+      ctx.fillStyle = '#3fae3f';
+      ctx.fillRect(-4, -9, 8, 14);
+      ctx.fillStyle = '#8a6a3a';
+      ctx.fillRect(-2, -13, 4, 5);
+      ctx.restore();
+      continue;
+    }
+    const ky = groundY - 82;
+    ctx.save();
+    ctx.translate(k.x, ky);
+    ctx.rotate(frameCount*0.35 * (k.dir || 1));
+    if (k.star) {
+      // spinning four-point shuriken
+      ctx.fillStyle = '#2a2e33';
+      for (let i=0;i<4;i++) {
+        ctx.save();
+        ctx.rotate(i * Math.PI/2);
+        ctx.beginPath();
+        ctx.moveTo(0,0); ctx.lineTo(15,-5); ctx.lineTo(18,0); ctx.lineTo(15,5);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+      ctx.fillStyle = '#6b7076';
+      ctx.beginPath(); ctx.arc(0,0,4,0,Math.PI*2); ctx.fill();
+    } else {
+      ctx.fillStyle = '#d8dde0';
+      ctx.beginPath();
+      ctx.moveTo(-9, 0); ctx.lineTo(6, -2.5); ctx.lineTo(6, 2.5);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#6b4a2a';
+      ctx.fillRect(6, -1.8, 5, 3.6);
+    }
+    ctx.restore();
+  }
+
+  // lingering poison gas clouds from shattered bottles
+  for (const cloud of gasClouds) {
+    const alpha = Math.min(1, cloud.life / 40) * 0.5;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    const cg = ctx.createRadialGradient(cloud.x, groundY-20, 4, cloud.x, groundY-20, cloud.radius);
+    cg.addColorStop(0, '#9dfa9d');
+    cg.addColorStop(1, 'rgba(120,220,120,0)');
+    ctx.fillStyle = cg;
+    ctx.beginPath();
+    ctx.ellipse(cloud.x, groundY-20, cloud.radius, cloud.radius*0.7, 0, 0, Math.PI*2);
+    ctx.fill();
+    // wispy bubbles for texture
+    for (let i=0;i<4;i++) {
+      const bx = cloud.x + Math.sin(frameCount*0.05 + i*2)*cloud.radius*0.5;
+      const by = groundY-20 - i*8 - (frameCount%30);
+      ctx.fillStyle = 'rgba(160,255,160,0.35)';
+      ctx.beginPath(); ctx.arc(bx, by, 6-i, 0, Math.PI*2); ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // energy bottle pickups - dropped by defeated knife throwers, heal the player on contact
+  for (const p of pickups) {
+    if (p.collected) continue;
+    const bob = Math.sin(p.bobPhase) * 3;
+    const py = groundY - 14 + bob;
+    ctx.save();
+    ctx.translate(p.x, py);
+    ctx.fillStyle = 'rgba(0,0,0,0.35)';
+    ctx.beginPath();
+    ctx.ellipse(0, 16 - bob, 10, 3.5, 0, 0, Math.PI*2);
+    ctx.fill();
+    // glow
+    const glow = ctx.createRadialGradient(0,0,2,0,0,18);
+    glow.addColorStop(0, 'rgba(120,255,120,0.55)');
+    glow.addColorStop(1, 'rgba(120,255,120,0)');
+    ctx.fillStyle = glow;
+    ctx.beginPath(); ctx.arc(0,0,18,0,Math.PI*2); ctx.fill();
+    // bottle body
+    ctx.fillStyle = '#3fae3f';
+    roundRect(-6, -8, 12, 18, 3);
+    ctx.fill();
+    ctx.fillStyle = '#7ee67e';
+    roundRect(-4, -5, 8, 11, 2);
+    ctx.fill();
+    // neck + cap
+    ctx.fillStyle = '#8a6a3a';
+    ctx.fillRect(-2.5, -13, 5, 6);
+    ctx.fillStyle = '#c9a24a';
+    ctx.fillRect(-3, -15, 6, 3);
+    // cross shine
+    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(0, -2); ctx.lineTo(0, 6);
+    ctx.moveTo(-3, 2); ctx.lineTo(3, 2);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  const playerHurtFlash = player.hurtTimer>0 && Math.floor(player.hurtTimer/3)%2===0;
+  const playerAttackWindow = player.attackType === 'kick' ? 20 : 14;
+  drawFighter({
+    x: player.x, y: player.y, w: player.w, h: player.h,
+    color: '#2a5aa8', skin: '#f4c896', pants: '#1e3d78',
+    facing: player.facing, ducking: player.ducking,
+    attackType: player.attackType,
+    attackLow: player.lowAttack,
+    attackProgress: player.attackType ? 1 - (player.attackTimer/playerAttackWindow) : 0,
+    hurt: playerHurtFlash,
+    walkPhase: player.moving && player.onGround ? player.walkPhase : 0,
+    airborne: !player.onGround,
+    airTime: player.airTime,
+    vy: player.vy,
+    isPlayer: true
+  });
+
+  for (const s of sparks) {
+    const t = s.life / s.maxLife;
+    ctx.save();
+    ctx.translate(s.x, s.y);
+    ctx.globalAlpha = t;
+    ctx.strokeStyle = '#fff6c0';
+    ctx.lineWidth = 2;
+    for (let i=0;i<5;i++) {
+      const ang = (i/5)*Math.PI*2 + s.life*0.3;
+      const len = 10*(1-t)+4;
+      ctx.beginPath();
+      ctx.moveTo(0,0);
+      ctx.lineTo(Math.cos(ang)*len, Math.sin(ang)*len);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+  ctx.globalAlpha = 1;
+
+  for (const p of particles) {
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = Math.min(1, p.life/20);
+    if (p.blood) {
+      ctx.beginPath();
+      ctx.ellipse(p.x, p.y, 2.6, 3.4, 0, 0, Math.PI*2);
+      ctx.fill();
+    } else {
+      ctx.fillRect(p.x-2, p.y-2, 4, 4);
+    }
+  }
+  ctx.globalAlpha = 1;
+
+  ctx.restore(); // end world-space translate - HUD below is drawn in fixed screen space
+
+  ctx.fillStyle = 'rgba(0,0,0,0.6)';
+  roundRect(18, 14, 160, 16, 4); ctx.fill();
+  const hpRatio = player.health/player.maxHealth;
+  const hpColor = hpRatio > 0.5 ? '#4caf50' : hpRatio > 0.25 ? '#ffb300' : '#d32f2f';
+  ctx.fillStyle = hpColor;
+  roundRect(20, 16, 156*hpRatio, 12, 3); ctx.fill();
+  ctx.strokeStyle = '#ffcc00';
+  ctx.lineWidth = 2;
+  roundRect(18, 14, 160, 16, 4); ctx.stroke();
+
+  if (boss && boss.health > 0) {
+    const bw = 300;
+    ctx.fillStyle = 'rgba(0,0,0,0.6)';
+    roundRect(W/2-bw/2, 14, bw, 14, 4); ctx.fill();
+    const bRatio = Math.max(0, boss.health/boss.maxHealth);
+    ctx.fillStyle = '#c0293a';
+    roundRect(W/2-bw/2+2, 16, (bw-4)*bRatio, 10, 3); ctx.fill();
+    ctx.strokeStyle = '#e8b0b8';
+    ctx.lineWidth = 2;
+    roundRect(W/2-bw/2, 14, bw, 14, 4); ctx.stroke();
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('BOSS', W/2, 25);
+  }
+
+  ctx.restore();
+
+  if (flashTimer > 0) {
+    ctx.fillStyle = `rgba(180,0,0,${flashTimer/8*0.25})`;
+    ctx.fillRect(0,0,W,H);
+  }
+}
+
+function loop() {
+  dbgFrames++;
+  try {
+    if (running) update();
+    else if (!gameOverFlag && keys['Space']) { running = true; hideMsg(); }
+    if (gameOverFlag && keys['KeyR']) startGame();
+    draw();
+  } catch (err) {
+    // never let a single bad frame permanently freeze the game - log it and keep going
+    console.error('Frame error (recovered):', err);
+    showError('Bildruta-fel: ' + (err && err.message ? err.message : err));
+  }
+  requestAnimationFrame(loop);
+}
+
+requestAnimationFrame(loop);
+showMsg('ANDY FIGHTER', 'Tryck på STARTA SPELET för att börja');
+</script>
+</body>
+</html>
